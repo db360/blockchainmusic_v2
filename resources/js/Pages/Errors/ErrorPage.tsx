@@ -13,16 +13,19 @@ interface ErrorResponse {
 }
 
 const ErrorPage: React.FC<ErrorResponse> = ({ errors }) => {
-    console.log(errors)
+    console.log(errors);
     return (
         <Guest>
-            <div className="dark:text-gray-300">
-                <h1 className="text-red-500 text-justify">Error: {errors.connectionName}</h1>
+            <div className="text-gray-300">
+                <h1>Error: {errors.message}</h1>
                 {errors.code && <p>Code: {errors.code}</p>}
+                {errors.connectionName && (
+                    <p>Connection Name: {errors.connectionName}</p>
+                )}
                 {errors.errorInfo && (
                     <p>
-                        {errors.errorInfo[0]}, {errors.errorInfo[1]},
-                        {errors.errorInfo[2]}
+                        Error Info: {errors.errorInfo[0]}, {errors.errorInfo[1]}
+                        , {errors.errorInfo[2]}
                     </p>
                 )}
             </div>

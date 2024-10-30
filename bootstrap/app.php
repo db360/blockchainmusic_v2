@@ -7,8 +7,8 @@ use Inertia\Inertia;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
@@ -19,8 +19,15 @@ return Application::configure(basePath: dirname(__DIR__))
 
         //
     })
+    
+    // HANDLING ERRORS TO THE ErrorsPage.tsx
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e) {
-            return Inertia::render('Errors/ErrorPage', ['errors' => $e]);
+            return Inertia::render('Errors/ErrorPage', ['errors' => [
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'connectionName' => 'mysql',
+                'errorInfo' => $e instanceof \PDOException ? $e->errorInfo : null,
+            ]]);
         });
     })->create();

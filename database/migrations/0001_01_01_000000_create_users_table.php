@@ -15,10 +15,23 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->enum('role', ['artist', 'user', 'admin']);
             $table->string('password');
+            $table->timestamp('email_verified_at')->nullable();
+
+            // Aditional Fields:
+            $table->string('profile_picture')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('wallet_address')->nullable();
+            $table->json('socal_links')->nullable();
+
+            //Socials Auth Fields
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
