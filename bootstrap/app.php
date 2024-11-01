@@ -19,15 +19,16 @@ return Application::configure(basePath: dirname(__DIR__))
 
         //
     })
-    
+
     // HANDLING ERRORS TO THE ErrorsPage.tsx
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e) {
-            return Inertia::render('Errors/ErrorPage', ['errors' => [
-                'message' => $e->getMessage(),
-                'code' => $e->getCode(),
-                'connectionName' => 'mysql',
-                'errorInfo' => $e instanceof \PDOException ? $e->errorInfo : null,
-            ]]);
+            dd($e);
+            // return Inertia::render('Errors/ErrorPage', ['errors' => [
+            //     'message' => $e->getMessage(),
+            //     'code' => $e->getCode(),
+            //     'connectionName' => 'mysql',
+            //     'errorInfo' => $e instanceof \PDOException ? $e->errorInfo : null,
+            // ]]);
         });
     })->create();
