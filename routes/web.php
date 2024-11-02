@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AccountTypeController;
 use App\Http\Controllers\Auth\AvatarController;
+use App\Http\Controllers\Auth\BioController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
@@ -27,8 +28,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // AVATAR
     Route::post('/avatar', [AvatarController::class, 'update'])->name('avatar.update');
+    Route::get('/avatar-get', [AvatarController::class, 'getAvatar'])->name('avatar.get');
 
+    // BIOGRAPHY
+    Route::post('/bio', [BioController::class, 'update'])->name('bio.update');
 });
 
 // SOCIAL LOGINS ROUTES
@@ -40,4 +45,4 @@ Route::get('/register-edit', [AccountTypeController::class, 'showForm'])->name('
 Route::post('/register-edit', [AccountTypeController::class, 'store']);
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

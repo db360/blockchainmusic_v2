@@ -1,9 +1,6 @@
 import ImageSelector from "@/Components/ImageSelector";
-import { usePage } from "@inertiajs/react";
 
-export default function UpdateProfileAvatar({className}:{className? : string}){
-
-
+export default function UpdateProfileAvatar({className, avatarUrl}:{className? : string; avatarUrl?:string}){
 
     return (
         <section className={className}>
@@ -16,7 +13,7 @@ export default function UpdateProfileAvatar({className}:{className? : string}){
                     Update your account's avatar.
                 </p>
             </header>
-            <ImageSelector />
+            <ImageSelector avatarUrl={avatarUrl}/>
         </section>
 
     );

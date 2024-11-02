@@ -16,5 +16,5 @@ COMPONENTES USADOS
     -USERS (with social logins fields) ok
 6. USER LOGIN AND SOCIAL USERS LOGINS(with register form if new user) ok
 7. FIREBASE PROVIDER
-8. AVATAR UPLOAD ok -> check if exist and edit deleting old
-9. BIO CREATE
+8. AVATAR UPLOAD ok -> check if exist and edit deleting old (SAME PICTURE??)
+9. BIO CREATE -> OK (UPDATE? CREATE? IT MATTERS?)

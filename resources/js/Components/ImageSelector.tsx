@@ -1,13 +1,19 @@
 import {useForm } from "@inertiajs/react";
-import { FormEventHandler, useState } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 import InputError from "./InputError";
 import PrimaryButton from "./PrimaryButton";
 import { Transition } from "@headlessui/react";
 
-
-export default function ImageSelector() {
+export default function ImageSelector({avatarUrl}:{avatarUrl?: string}) {
 
     const [imagePreview, setImagePreview] = useState<string | null>(null); // Estado para manejar la previsualización de la imagen
+
+    useEffect(() => {
+        if (avatarUrl) {
+            setImagePreview(avatarUrl); // Setea la imagen existente si la hay
+        }
+    }, [avatarUrl]);
+    
     const {
         data,
         setData,
@@ -20,6 +26,8 @@ export default function ImageSelector() {
     } = useForm({
         avatar: null as File | null,
     });
+
+
 
 
 

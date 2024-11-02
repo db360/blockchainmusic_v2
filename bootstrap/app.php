@@ -23,7 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
     // HANDLING ERRORS TO THE ErrorsPage.tsx
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e) {
-            dd($e);
+            // dd(vars: $e);
             // return Inertia::render('Errors/ErrorPage', ['errors' => [
             //     'message' => $e->getMessage(),
             //     'code' => $e->getCode(),
