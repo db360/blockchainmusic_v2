@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Auth\AvatarController;
+use App\Http\Controllers\Auth\BioController;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -19,15 +20,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
-        $userId = Auth::user()->getAuthIdentifier();
-        $avatarController = new AvatarController;
-        $avatarUrl = $avatarController->getAvatar($userId);
-
-
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
-            'avatarUrl' => $avatarUrl,
+            'bio' => $request->user()->bio,
+            'avatarUrl' => $request->user()->profile_picture,
         ]);
     }
 

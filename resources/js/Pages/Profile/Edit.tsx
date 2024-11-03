@@ -10,8 +10,9 @@ import UpdateProfileBio from './Partials/UpdateProfileBio';
 export default function Edit({
     mustVerifyEmail,
     status,
-    avatarUrl
-}: PageProps<{ mustVerifyEmail: boolean; status?: string; avatarUrl?: string; }>) {
+    avatarUrl,
+    bio
+}: PageProps<{ mustVerifyEmail: boolean; status?: string; avatarUrl?: string; bio?: string}>) {
     return (
         <AuthenticatedLayout
             header={
@@ -39,7 +40,7 @@ export default function Edit({
                         <UpdateProfileAvatar avatarUrl={avatarUrl} className="max-w-xl" />
                     </div>
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">
-                        <UpdateProfileBio className="max-w-xl" />
+                        <UpdateProfileBio bio={bio} className="max-w-xl" />
                     </div>
 
                     <div className="bg-white p-4 shadow sm:rounded-lg sm:p-8 dark:bg-gray-800">

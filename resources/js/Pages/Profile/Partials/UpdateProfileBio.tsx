@@ -3,23 +3,26 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import TextAreaInput from "@/Components/TextAreaInput";
 import { Transition } from "@headlessui/react";
 import { useForm } from "@inertiajs/react";
-import { FormEventHandler, useEffect } from "react";
+import { FormEventHandler, useEffect, useState } from "react";
 
 export default function UpdateProfileBio({
     className,
+    bio
 }: {
     className?: string;
+    bio?: string;
 }) {
+
     const {
         data,
         setData,
         errors,
         post,
-        reset,
+        setDefaults,
         processing,
         recentlySuccessful,
     } = useForm({
-        bio: "",
+        bio: bio || "",
     });
 
     const updateBio: FormEventHandler = (e) => {
@@ -27,7 +30,9 @@ export default function UpdateProfileBio({
 
         post(route('bio.update'), {
             preserveScroll: true,
-            onSuccess: () => reset(),
+            onSuccess: () => {
+                setDefaults({ bio: data.bio }); // Establece 'bio' como predeterminado con el nuevo valor enviado
+            },
             onError: (errors) => {
                 console.log(errors);
             },
@@ -51,7 +56,7 @@ export default function UpdateProfileBio({
                     rows={4}
                     className="mt-4 block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write your biography here..."
-                    value={data.bio}
+                    value={ data.bio }
                     onChange={(e) => setData("bio", e.target.value)}
                 />
                 <InputError message={errors.bio} className="mt-2" />

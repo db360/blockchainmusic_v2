@@ -27,15 +27,6 @@ class AvatarController extends Controller
         return '';
     }
 
-
-    public function getAvatar($userId)
-    {
-
-        $avatar = User::select('profile_picture')->where('id', $userId)->first();
-
-        return $avatar['profile_picture'];
-    }
-
     public function update(Request $request, Bucket $firebaseStorage): RedirectResponse
     {
         //VALIDATION
