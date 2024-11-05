@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GenreScopes;
 use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Album extends Model
 {
-    use HasFactory, HasUuids, HasSlug, SoftDeletes;
+    use HasFactory, HasSlug, GenreScopes, SoftDeletes;
 
     protected $fillable = [
         'user_id',
@@ -24,6 +25,7 @@ class Album extends Model
         'release_date',
         'price',
         'genre',
+        'subgenre',
         'is_published',
         'metadata'
     ];
@@ -76,5 +78,9 @@ class Album extends Model
 
     public function scopeByGenre($query, string $genre){
         return $query->where('genre', $genre);
+    }
+
+    public function scopeBySubGenre($query, string $subgenre){
+        return $query->where('subgenre', $subgenre);
     }
 }

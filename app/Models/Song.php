@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\GenreScopes;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Song extends Model
 {
-    use HasFactory, HasUuids, SoftDeletes;
+    use HasFactory, SoftDeletes, GenreScopes;
 
     protected $fillable = [
         'album_id',
@@ -24,6 +25,7 @@ class Song extends Model
         'track_number',
         'lyrics',
         'genre',
+        'subgenre',
         'metadata',
         'play_count',
     ];
@@ -61,7 +63,4 @@ class Song extends Model
         $this->increment('play_count');
     }
 
-    public function scopeByGenre($query, string $genre){
-        return $query->where('genre', $genre);
-    }
 }

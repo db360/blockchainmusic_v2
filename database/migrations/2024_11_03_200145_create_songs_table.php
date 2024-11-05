@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('track_number');
             $table->text('lyrics')->nullable();
             $table->string('genre');
+            $table->string('subgenre')->nullable();
             $table->json('metadata')->nullable();
             $table->unsignedInteger('play_count')->default(0);
             $table->timestamps();

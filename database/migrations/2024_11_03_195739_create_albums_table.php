@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('release_date');
             $table->decimal('price', 8, 2);
             $table->string('genre');
+            $table->string('subgenre')->nullable();
             $table->boolean('is_published')->default(false);
             $table->json('metadata')->nullable();
             $table->timestamps();

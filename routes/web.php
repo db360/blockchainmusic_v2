@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\Auth\AccountTypeController;
 use App\Http\Controllers\Auth\AvatarController;
 use App\Http\Controllers\Auth\BioController;
@@ -34,6 +35,9 @@ Route::middleware('auth')->group(function () {
 
     // BIOGRAPHY
     Route::post('/bio', [BioController::class, 'update'])->name('bio.update');
+
+    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
+
 });
 
 // SOCIAL LOGINS ROUTES
