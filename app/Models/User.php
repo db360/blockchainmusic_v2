@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -58,39 +59,57 @@ class User extends Authenticatable
         ];
     }
 
-    public function albums(): HasMany {
+    public function albums(): HasMany
+    {
         return $this->hasMany(Album::class);
     }
 
-    public function songs(): HasMany {
+    public function songs(): HasMany
+    {
         return $this->hasMany(Song::class);
     }
 
-    public function playlists(): HasMany {
+    public function playlists(): HasMany
+    {
         return $this->hasMany(Playlist::class);
     }
 
-    public function favoriteAlbums(): HasMany {
+    public function favoriteAlbums(): HasMany
+    {
         return $this->hasMany(Favorite::class)->where('favoritable_type', Album::class);
     }
 
-    public function favoriteSongs(): HasMany {
+    public function favoriteSongs(): HasMany
+    {
         return $this->hasMany(Favorite::class)->where('favoritable_type', Song::class);
     }
 
-    public function hasRole(string $role):bool {
+    public function hasRole(string $role): bool
+    {
         return $this->role === $role;
     }
 
-    public function isArtist():bool {
+    public function isArtist(): bool
+    {
         return $this->hasRole('artist');
     }
 
-    public function hasPurchased($item): bool {
-        return $this->purchases()
-            ->where('purchaseable_type', get_class($item))
-            ->where('purchaseable_id', $item->id)
-            ->exists();
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
     }
 
+    public function purchasedAlbums()
+    {
+        return $this->purchases()
+        ->where('purchaseable_type', Album::class)
+        ->with('purchaseable');
+    }
+
+    public function purchasedSongs()
+    {
+        return $this->purchases()
+        ->where('purchaseable_type', Song::class)
+        ->with('purchaseable');
+    }
 }

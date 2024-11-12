@@ -1,48 +1,46 @@
 import {Album} from "@/types";
-import { Link } from "@inertiajs/react";
 
 export default function AlbumsCard({albums}:{albums: Album[]}) {
-    console.log(albums)
+
     return (
+
         albums && albums.length > 0 ? (
-            albums.map((album) => (
-                <div
-                    key={album.id}
-                    className="cursor-pointer group relative flex flex-col dark:bg-gray-600 bg-white shadow-sm border border-gray-400 w-64 hover:shadow-lg transition-shadow duration-300"
-                >
-                                 <Link
-                                 href=""
-                            // href={route(
-                            //     "dashboard.showAlbum",
-                            //     album.id
-                            // )}
-                            key={album.id}
-                            className="py-1 px-1 border border-transparent text-center text-sm text-white transition-all shadow-md hover:shadow-lg focus:bg-slate-800 focus:shadow-none active:bg-slate-700 hover:bg-slate-700 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-                            type="button"
-                        >
-                    <div className="relative h-40 overflow-hidden text-white">
-                        <img
-                            className="-translate-y-8 transition-transform duration-500 ease-[cubic-bezier(0.25, 1, 0.5, 1)] transform group-hover:scale-150"
-                            src={album.cover_image ? album.cover_image : 'ruta/a/imagen/predeterminada.jpg'}
-                            alt="investment-seed-round"
-                        />
-                    </div>
-                    <div className="py-1 flex flex-col text-left ">
+            albums.map((album, index) => (
+                <div key={index} className="bg-gray-900 shadow-lg rounded px-3">
+                <div className="group relative">
+                  <img className="w-full md:w-72 block rounded" src={album.cover_image ?? 'image/placeholder.jpg'} alt="" />
+                  <div className="absolute bg-black rounded bg-opacity-0 group-hover:bg-opacity-60 w-full h-full top-0 flex items-center group-hover:opacity-100 transition justify-evenly">
+                    <button title="like" className="hover:scale-110 text-white opacity-0 transform translate-y-3 group-hover:translate-y-0 group-hover:opacity-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-heart" viewBox="0 0 16 16">
+                        <path d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                      </svg>
+                    </button>
 
-                        <h6 className=" dark:text-white text-xl font-semibold h-10 truncate">
-                            {album.title}
-                        </h6>
+                    <button title="play" className="hover:scale-110 text-white opacity-0 transform translate-y-3 group-hover:translate-y-0 group-hover:opacity-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" className="bi bi-play-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM6.79 5.093A.5.5 0 0 0 6 5.5v5a.5.5 0 0 0 .79.407l3.5-2.5a.5.5 0 0 0 0-.814l-3.5-2.5z" />
+                      </svg>
+                    </button>
 
-                        <p className="dark:text-gray-300 leading-normal font-light truncate h-">
-                            {album.user.name}
-                        </p>
-                    </div>
-
-                        </Link>
+                    <button title="more" className="hover:scale-110 text-white opacity-0 transform translate-y-3 group-hover:translate-y-0 group-hover:opacity-100 transition">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-three-dots" viewBox="0 0 16 16">
+                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
+                <div className="px-1 py-2">
+                  <h3 className="text-white text-lg sm:text-sm line-clamp-1">{album.title}</h3>
+                  <p className="text-gray-400 sm:text-sm line-clamp-1">{album.user.name}</p>
+                </div>
+              </div>
             ))
         ) : (
             <p>No albums found.</p>
         )
+
+
+
+
     )
 }

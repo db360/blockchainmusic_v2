@@ -10,9 +10,9 @@ export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
-    
     const user = usePage().props.auth.user;
 
+    console.log(user);
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
@@ -30,11 +30,52 @@ export default function Authenticated({
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
-                                    href={route("dashboard")}
-                                    active={route().current("dashboard")}
+                                    href={route("explore.index")}
+                                    active={route().current("explore.index")}
                                 >
-                                    Dashboard
+                                    Explorer
                                 </NavLink>
+
+                                <NavLink
+                                    href={route("albums.user")}
+                                    active={route().current("albums.user")}
+                                >
+                                    My Albums
+                                </NavLink>
+
+                                {user.role === "user" && (
+                                    <>
+                                        <NavLink
+                                            href={route("purchases.user")}
+                                            active={route().current(
+                                                "purchases.user"
+                                            )}
+                                        >
+                                            History
+                                        </NavLink>
+                                    </>
+                                )}
+
+                                {user.role === "artist" && (
+                                    <>
+                                        <NavLink
+                                            href={route("albums.upload")}
+                                            active={route().current(
+                                                "albums.upload"
+                                            )}
+                                        >
+                                            Upload
+                                        </NavLink>
+                                        <NavLink
+                                            href={route("sales.artist")}
+                                            active={route().current(
+                                                "sales.artist"
+                                            )}
+                                        >
+                                            Sales History
+                                        </NavLink>
+                                    </>
+                                )}
                             </div>
                         </div>
 
@@ -55,6 +96,9 @@ export default function Authenticated({
                                                     src={user.profile_picture}
                                                     alt=""
                                                 />
+                                                <p className="text-gray-400 text-xs ml-3 group-hover:text-gray-300 group-transition duration-150 ease-in">
+                                                    ({user.role})
+                                                </p>
                                                 <svg
                                                     className="-me-0.5 ms-2 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
@@ -68,6 +112,7 @@ export default function Authenticated({
                                                     />
                                                 </svg>
                                             </button>
+
                                         </span>
                                     </Dropdown.Trigger>
 
@@ -141,8 +186,8 @@ export default function Authenticated({
                 >
                     <div className="space-y-1 pb-3 pt-2">
                         <ResponsiveNavLink
-                            href={route("dashboard")}
-                            active={route().current("dashboard")}
+                            href={route("explore.index")}
+                            active={route().current("explore.index")}
                         >
                             Dashboard
                         </ResponsiveNavLink>

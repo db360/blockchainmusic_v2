@@ -5,7 +5,28 @@ export interface User {
     email_verified_at?: string;
     profile_picture?: string;
     bio?: string;
+    role: string;
 }
+
+export interface Song {
+    id: number;
+    album_id: number;
+    user_id: number;
+    title: string;
+    file_url: string;
+    duration: string;
+    price: number;
+    track_number: number;
+    lyrics?: string | null;
+    genre: string;
+    subgenre?: string | null;
+    metadata?: Record<string, any> | null;
+    play_count: number;
+    created_at: string; // ISO date string
+    updated_at: string; // ISO date string
+}
+
+export type Songs = Song[];
 
 export interface Album {
     id: number; // Identificador del álbum

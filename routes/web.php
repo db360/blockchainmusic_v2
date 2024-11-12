@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\AvatarController;
 use App\Http\Controllers\Auth\BioController;
 use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PurchasesController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,9 +21,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
 
@@ -36,7 +38,11 @@ Route::middleware('auth')->group(function () {
     // BIOGRAPHY
     Route::post('/bio', [BioController::class, 'update'])->name('bio.update');
 
-    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
+    Route::get('/explore', [AlbumController::class, 'index'])->name('explore.index');
+    Route::get('/albums', [AlbumController::class, 'userAlbums'])->name('albums.user');
+    Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
+    Route::get('/history', [PurchasesController::class, 'artistSales'])->name('sales.artist');
+    Route::get('/upload', [UploadController::class, 'upload'])->name('albums.upload');
 
 });
 
