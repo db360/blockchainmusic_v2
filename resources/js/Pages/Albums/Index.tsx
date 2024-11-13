@@ -8,8 +8,6 @@ export default function Index() {
 
     let albumsData:Album[] = albums?.data;
 
-
-
     return (
         <Authenticated
             header={
@@ -18,11 +16,9 @@ export default function Index() {
                 </h2>
             }
         >
-            <div>
                 <div className="py-12">
                        <ExplorerLayout albums={albumsData} />
                 </div>
-            </div>
         </Authenticated>
     );
 }

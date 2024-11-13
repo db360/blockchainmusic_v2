@@ -6,7 +6,7 @@ export default function AlbumsCard({albums}:{albums: Album[]}) {
 
         albums && albums.length > 0 ? (
             albums.map((album, index) => (
-                <div key={index} className="bg-gray-900 shadow-lg rounded px-3">
+                <div key={index} className="bg-gray-100 dark:bg-gray-900 shadow-lg rounded px-3">
                 <div className="group relative">
                   <img className="w-full md:w-72 block rounded" src={album.cover_image ?? 'image/placeholder.jpg'} alt="" />
                   <div className="absolute bg-black rounded bg-opacity-0 group-hover:bg-opacity-60 w-full h-full top-0 flex items-center group-hover:opacity-100 transition justify-evenly">

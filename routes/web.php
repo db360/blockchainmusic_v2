@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchasesController;
 use App\Http\Controllers\UploadController;
+use App\Http\Middleware\CheckArtistRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,7 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/albums', [AlbumController::class, 'userAlbums'])->name('albums.user');
     Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
     Route::get('/history', [PurchasesController::class, 'artistSales'])->name('sales.artist');
-    Route::get('/upload', [UploadController::class, 'upload'])->name('albums.upload');
+
+    Route::get('/upload', [UploadController::class, 'uploadForm'])->name('albums.uploadForm');
+    Route::post('/upload', [UploadController::class, 'upload'])->name('albums.upload')->middleware(CheckArtistRole::class);
 
 });
 
