@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Models\Purchase;
 use App\Models\User;
+use Google\Cloud\Storage\Bucket;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -58,5 +59,34 @@ class AlbumController extends Controller
                 'role' => $user->role
             ]);
         }
+    }
+
+    public function showAlbum($id, Bucket $firebaseStorage)
+    {
+
+        $album = Album::with(['songs', 'user'])->findOrFail($id);
+
+        // Generar Signed URLs para cada canción
+        $songsWithSignedUrls = $album->songs->map(function ($song) use ($firebaseStorage) {
+            $songObject = $firebaseStorage->object($song->file_url);
+
+            // Generar una URL firmada válida por 1 hora
+            $AudioSignedUrl = $songObject->signedUrl(
+                new \DateTime('+1 hour'),  // Duración de la URL firmada
+                [
+                    'version' => 'v4',  // Utiliza la versión 4 de la firma
+                ]
+            );
+
+            // Agregar la URL firmada a la canción
+            $song->song_signed_url = $AudioSignedUrl;
+            return $song;
+        });
+
+        return Inertia::render('Albums/ShowAlbums', [
+            'album' => $album,
+            'songs' => $songsWithSignedUrls,
+            'user' => $album->user
+        ]);
     }
 }

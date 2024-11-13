@@ -5,7 +5,6 @@ import { usePage } from "@inertiajs/react";
 
 export default function UserAlbums() {
     const {role, albums} = usePage().props;
-    console.log(albums);
 
     let albumData:Album[] | null = null;
 

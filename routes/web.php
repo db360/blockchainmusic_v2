@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/upload', [UploadController::class, 'uploadForm'])->name('albums.uploadForm');
     Route::post('/upload', [UploadController::class, 'upload'])->name('albums.upload')->middleware(CheckArtistRole::class);
 
+    Route::get('/album/{id}', [AlbumController::class, 'showAlbum'])->name('albums.showAlbum');
+
 });
 
 // SOCIAL LOGINS ROUTES
