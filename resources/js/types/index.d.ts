@@ -24,6 +24,7 @@ export interface Song {
     play_count: number;
     created_at: string; // ISO date string
     updated_at: string; // ISO date string
+    song_signed_url: string;
 }
 
 export type Songs = Song[];

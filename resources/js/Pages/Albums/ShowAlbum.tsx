@@ -6,9 +6,16 @@ import { IoPlayCircleOutline, IoPauseCircleOutline } from "react-icons/io5";
 
 import { TbCash } from "react-icons/tb";
 import { Album, Songs, User } from "@/types";
+import { useContext } from "react";
+import { AudioPlayerContextType } from "@/types/context/audioPlayerContext";
+import { AudioPlayerContext } from "@/context/AudioPlayerContext";
 
 
 export default function ShowAlbum({ album, user, songs }:{album:Album, user:User, songs:Songs}) {
+
+console.log(songs)
+    const { handlePlayPause, playingSongId, isPlaying } =
+        useContext<AudioPlayerContextType>(AudioPlayerContext);
 
     return (
         <AuthenticatedLayout
@@ -103,17 +110,19 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <button
-                                                        onClick={() =>""
+                                                        onClick={() =>
+                                                            handlePlayPause(
+                                                                song
+                                                            )
                                                         }
                                                     >
-                                                        BUTTON
-                                                        {/* {playingSongId ===
+                                                        {playingSongId ===
                                                             song.id &&
                                                         isPlaying ? (
                                                             <IoPauseCircleOutline className="text-2xl hover:text-orange-500" />
                                                         ) : (
                                                             <IoPlayCircleOutline className="text-2xl hover:text-green-500" />
-                                                        )} */}
+                                                        )}
                                                     </button>
                                                 </td>
                                                 {user.role === "user" ? (

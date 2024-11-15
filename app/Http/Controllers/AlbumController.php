@@ -95,6 +95,7 @@ class AlbumController extends Controller
             return $song;
         });
 
+        
 
         return Inertia::render('Albums/ShowAlbum', [
             'album' => $album,

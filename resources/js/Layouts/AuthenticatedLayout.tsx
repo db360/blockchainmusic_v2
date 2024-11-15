@@ -1,10 +1,16 @@
+import { PropsWithChildren, ReactNode, useContext, useState } from "react";
+import { Link, usePage } from "@inertiajs/react";
+import AudioPlayer from "react-h5-audio-player";
+
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import ThemeSelector from "@/Components/ThemeSelector";
-import { Link, usePage } from "@inertiajs/react";
-import { PropsWithChildren, ReactNode, useState } from "react";
+import { AudioPlayerContext } from "@/context/AudioPlayerContext";
+import "react-h5-audio-player/lib/styles.css";
+
+
 
 export default function Authenticated({
     header,
@@ -14,6 +20,14 @@ export default function Authenticated({
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
+        const context = useContext(AudioPlayerContext);
+
+        if (!context) {
+            throw new Error('AudioPlayerContext debe usarse dentro de su proveedor');
+        }
+
+        const { urlPlay, isPlaying, playerRef, handlePlay, handlePause, handleEnded, titleSongPlaying } = context;
 
     return (
         <div className="h-full min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -227,6 +241,19 @@ export default function Authenticated({
             )}
 
             <main className="overflow-hidden">{children}</main>
+            <div className="fixed bottom-0 w-full transition-all "> {/*translate-y-28 */}
+                <div className="h-6 bg-slate-300">
+                    <p className="text-center">{titleSongPlaying}</p>
+                </div>
+                <AudioPlayer
+                    autoPlay={isPlaying} // Hacer autoplay dependiendo del estado
+                    src={urlPlay}
+                    ref={playerRef} // Usar referencia para controlar el reproductor
+                    onPlay={handlePlay} // Para debug o funciones adicionales
+                    onPause={handlePause} // Para debug o funciones adicionales
+                    onEnded={handleEnded}
+                />
+            </div>
         </div>
     );
 }
