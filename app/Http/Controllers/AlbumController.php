@@ -13,13 +13,24 @@ class AlbumController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+
         $albums = Album::with('user')
             ->where('is_published', true)
             ->latest()
             ->paginate(12);
 
+                // Obtener los IDs de los álbumes que le gustan al usuario
+        $userLikes = $user ? $user->favorites()
+        ->where('favoritable_type', Album::class)
+        ->pluck('favoritable_id')
+        ->toArray() : [];
+
+
+
         return Inertia::render('Albums/Index', [
             'albums' => $albums,
+            'userLikes' => $userLikes
         ]);
     }
     public function userAlbums()
@@ -63,6 +74,7 @@ class AlbumController extends Controller
 
     public function showAlbum($id, Bucket $firebaseStorage)
     {
+        // dd($id);
 
         $album = Album::with(['songs', 'user'])->findOrFail($id);
 
@@ -83,7 +95,8 @@ class AlbumController extends Controller
             return $song;
         });
 
-        return Inertia::render('Albums/ShowAlbums', [
+
+        return Inertia::render('Albums/ShowAlbum', [
             'album' => $album,
             'songs' => $songsWithSignedUrls,
             'user' => $album->user

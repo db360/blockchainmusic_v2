@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\SocialLoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchasesController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\CheckArtistRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -48,6 +49,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/upload', [UploadController::class, 'upload'])->name('albums.upload')->middleware(CheckArtistRole::class);
 
     Route::get('/album/{id}', [AlbumController::class, 'showAlbum'])->name('albums.showAlbum');
+
+    Route::post('/albums/{album}/favorite', [UserController::class, 'toggleLike'])
+    ->name('favorites.toggle');
 
 });
 

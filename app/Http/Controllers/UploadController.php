@@ -70,7 +70,7 @@ class UploadController extends Controller
             'name' => $imagePath
         ]);
 
-        $newAlbum = Album::create(['user_id' => $userId, 'title' => $albumTitle, 'cover_image' => $this->convertGsToHttp($imagePath), 'description' => $description, 'price' => $albumPrice, 'release_date' => $fechaMySQL, 'genre' => $genre, 'subgenre' => $subGenre]);
+        $newAlbum = Album::create(['user_id' => $userId, 'title' => $albumTitle, 'cover_image' => $this->convertGsToHttp($imagePath), 'description' => $description, 'price' => $albumPrice, 'release_date' => $fechaMySQL, 'genre' => $genre, 'subgenre' => $subGenre, 'is_published' => 1]);
 
         $albumID = $newAlbum->id;
 

@@ -4,7 +4,7 @@ import { usePage } from "@inertiajs/react";
 import ExplorerLayout from "../Explorer/ExplorerLayout";
 
 export default function Index() {
-    const { albums, user } = usePage().props;
+    const { albums, user, userLikes } = usePage().props;
 
     let albumsData:Album[] = albums?.data;
 
@@ -17,7 +17,7 @@ export default function Index() {
             }
         >
                 <div className="py-12">
-                       <ExplorerLayout albums={albumsData} />
+                       <ExplorerLayout albums={albumsData} userLikes={userLikes}/>
                 </div>
         </Authenticated>
     );

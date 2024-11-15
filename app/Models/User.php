@@ -74,15 +74,38 @@ class User extends Authenticatable
         return $this->hasMany(Playlist::class);
     }
 
-    public function favoriteAlbums(): HasMany
+    // FAVORITES
+    public function favorites(): HasMany
     {
-        return $this->hasMany(Favorite::class)->where('favoritable_type', Album::class);
+        return $this->hasMany(Favorite::class);
     }
 
-    public function favoriteSongs(): HasMany
+    public function hasLikedAlbum(Album $album): bool
     {
-        return $this->hasMany(Favorite::class)->where('favoritable_type', Song::class);
+        return $this->favorites()
+            ->where('favoritable_type', Album::class)
+            ->where('favoritable_id', $album->id)
+            ->exists();
     }
+
+    public function favorite($model)
+    {
+        return $this->favorites()->create([
+            'favoritable_type' => get_class($model),
+            'favoritable_id' => $model->id
+        ]);
+    }
+
+    public function unfavorite($model)
+    {
+        return $this->favorites()
+            ->where('favoritable_type', get_class($model))
+            ->where('favoritable_id', $model->id)
+            ->delete();
+    }
+
+
+    // ROLES
 
     public function hasRole(string $role): bool
     {
@@ -99,6 +122,7 @@ class User extends Authenticatable
         return $this->hasMany(Purchase::class);
     }
 
+    // PURCHASES
     public function purchasedAlbums()
     {
         return $this->purchases()
