@@ -7,15 +7,14 @@ import { IoPlayCircleOutline, IoPauseCircleOutline } from "react-icons/io5";
 import { TbCash } from "react-icons/tb";
 import { Album, Songs, User } from "@/types";
 import { useContext } from "react";
-import { AudioPlayerContextType } from "@/types/context/audioPlayerContext";
 import { AudioPlayerContext } from "@/context/AudioPlayerContext";
 
 
 export default function ShowAlbum({ album, user, songs }:{album:Album, user:User, songs:Songs}) {
 
+    const { handlePlayPause, playingSongId, isPlaying } = useContext(AudioPlayerContext);
+
 console.log(songs)
-    const { handlePlayPause, playingSongId, isPlaying } =
-        useContext<AudioPlayerContextType>(AudioPlayerContext);
 
     return (
         <AuthenticatedLayout

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Purchase;
-use App\Models\User;
 use Google\Cloud\Storage\Bucket;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -95,7 +94,7 @@ class AlbumController extends Controller
             return $song;
         });
 
-        
+
 
         return Inertia::render('Albums/ShowAlbum', [
             'album' => $album,

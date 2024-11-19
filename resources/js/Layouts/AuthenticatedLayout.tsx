@@ -1,4 +1,4 @@
-import { PropsWithChildren, ReactNode, useContext, useState } from "react";
+import { PropsWithChildren, ReactNode, useContext, useEffect, useRef, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
 import AudioPlayer from "react-h5-audio-player";
 
@@ -7,27 +7,56 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import ThemeSelector from "@/Components/ThemeSelector";
-import { AudioPlayerContext } from "@/context/AudioPlayerContext";
 import "react-h5-audio-player/lib/styles.css";
-
-
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/src/store/store";
+import { setPlayerRef, togglePlay, updateDuration, updateTime } from "@/src/store/audio/audioSlice";
+import H5AudioPlayer from "react-h5-audio-player";
 
 export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
+    const dispatch = useDispatch();
+    const playerRef = useRef<H5AudioPlayer>(null);
+
+    const { isPlaying, urlPlay, titleSongPlaying } = useSelector((state: RootState) => state.audio);
+
+      // Set player reference when component mounts
+      useEffect(() => {
+        const currentRef = playerRef.current ? { current: playerRef.current } : null;
+        dispatch(setPlayerRef(currentRef));
+
+        return () => {
+            dispatch(setPlayerRef({ current: null }));
+        };
+    }, [dispatch]);
+
+     // Handle player events
+     const handlePlay = () => {
+        dispatch(togglePlay(true));
+    };
+
+    const handlePause = () => {
+        dispatch(togglePlay(false));
+    };
+
+    const handleEnded = () => {
+        dispatch(togglePlay(false));
+        // You might want to add logic here to play the next song
+        // dispatch(playNextSong()) or similar
+    };
+
+    const handleTimeUpdate = (e: any) => {
+        dispatch(updateTime(e.currentTime));
+    };
+
+
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
 
-        const context = useContext(AudioPlayerContext);
-
-        if (!context) {
-            throw new Error('AudioPlayerContext debe usarse dentro de su proveedor');
-        }
-
-        const { urlPlay, isPlaying, playerRef, handlePlay, handlePause, handleEnded, titleSongPlaying } = context;
 
     return (
         <div className="h-full min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -246,12 +275,15 @@ export default function Authenticated({
                     <p className="text-center">{titleSongPlaying}</p>
                 </div>
                 <AudioPlayer
-                    autoPlay={isPlaying} // Hacer autoplay dependiendo del estado
-                    src={urlPlay}
-                    ref={playerRef} // Usar referencia para controlar el reproductor
-                    onPlay={handlePlay} // Para debug o funciones adicionales
-                    onPause={handlePause} // Para debug o funciones adicionales
-                    onEnded={handleEnded}
+                       autoPlay={isPlaying}
+                       src={urlPlay}
+                       ref={playerRef}
+                       onPlay={handlePlay}
+                       onPause={handlePause}
+                       onEnded={handleEnded}
+                       onListen={handleTimeUpdate}
+                       showJumpControls={true}
+                       showFilledVolume={true}
                 />
             </div>
         </div>

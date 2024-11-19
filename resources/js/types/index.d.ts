@@ -66,3 +66,21 @@ export type PageProps<
     albums?: Albums
 };
 
+
+interface AudioState {
+    urlPlay: string;
+    playingSongId: number | null;
+    isPlaying: boolean;
+    titleSongPlaying: string;
+    currentTime: number;
+    playerRef: RefObject<H5AudioPlayer> | null;
+    serializablePlayerRef: SerializablePlayerRef | null; // Cambia este tipo
+    duration: number;
+    volume: number;
+    isMuted: boolean;
+    isLoading: boolean;
+    error: string | null;
+    queue: Song[];
+    repeatMode: 'OFF' | 'ONE' | 'ALL';
+    shuffleMode: boolean;
+}
