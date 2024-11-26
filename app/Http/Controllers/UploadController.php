@@ -51,7 +51,9 @@ class UploadController extends Controller
             'price' => 'nullable|numeric'
         ]);
 
-        // dd($request->all());
+        // ID3 METADATA
+        // Initialize getID3 engine
+        $getID3 = new getID3;
 
         $filePaths = [];
         $imageCover = $request->file('image');
@@ -60,6 +62,7 @@ class UploadController extends Controller
         $albumTitle = $request->input('album_title');
         $genre = $request->input('genre');
         $subGenre = $request->input('subgenre');
+        $songs = $request->file('files');
 
 
         $fechaMySQL = now()->format('Y-m-d H:i:s');
@@ -74,11 +77,9 @@ class UploadController extends Controller
 
         $albumID = $newAlbum->id;
 
-        // ID3 METADATA
-        // Initialize getID3 engine
-        $getID3 = new getID3;
+
         // ITERATION OVER FILES AND SAVE
-        foreach ($request->file('files') as $index => $file) {
+        foreach ($songs as $index => $file) {
 
             // INFO METADATA FILE
             $infoFile = $getID3->analyze($file->getPathname());
@@ -128,12 +129,10 @@ class UploadController extends Controller
                 'path' => $filePath,
                 'album_title' => $albumTitle
             ];
-
-
-            return to_route('albums.showAlbum', [
-                'id' => $newAlbum->id,
-                200
-            ])->withInput($filePaths);
         }
+        return to_route('albums.showAlbum', [
+            'id' => $newAlbum->id,
+            200
+        ])->withInput($filePaths);
     }
 }

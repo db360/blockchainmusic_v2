@@ -5,17 +5,36 @@ import { Head } from "@inertiajs/react";
 import { IoPlayCircleOutline, IoPauseCircleOutline } from "react-icons/io5";
 
 import { TbCash } from "react-icons/tb";
-import { Album, Songs, User } from "@/types";
-import { useContext } from "react";
-import { AudioPlayerContext } from "@/context/AudioPlayerContext";
+import { Album, Song, Songs, User } from "@/types";
+import { AppDispatch, RootState } from "@/src/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setQueue, updatePlayback } from "@/src/store/audio/audioSlice";
+import { playQueue, playSong } from "@/src/store/audio/thunks";
+
 
 
 export default function ShowAlbum({ album, user, songs }:{album:Album, user:User, songs:Songs}) {
 
-    const { handlePlayPause, playingSongId, isPlaying } = useContext(AudioPlayerContext);
+    const dispatch: AppDispatch = useDispatch();
+    const {currentSong, playback, queue, settings} = useSelector((state: RootState)  => state.audio);
 
-console.log(songs)
+    console.log('Current SONG: ', currentSong)
+    console.log('playback: ', playback)
+    console.log('queue: ', queue)
+    console.log('settings: ', settings)
 
+    const handleAddToQueue = () => {
+        dispatch(playQueue(songs));
+        console.log(queue);
+      };
+
+      const handlePlayPause = (song: Song) => {
+        if (currentSong?.id === song.id && currentSong?.id) {
+          dispatch(updatePlayback({currentTime: playback.currentTime, duration: playback.duration, isMuted: playback.isMuted, isPlaying: playback.isPlaying, volume: playback.volume}));
+        } else {
+          dispatch(playSong(song));
+        }
+      };
     return (
         <AuthenticatedLayout
             header={
@@ -32,7 +51,7 @@ console.log(songs)
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg dark:bg-gray-800">
                         <div className="p-6 text-gray-900 dark:text-gray-100">
                             <div className="flex w-full">
-                                <div>
+                                <div onClick={handleAddToQueue} className="hover:cursor-pointer">
                                     <img
                                         className="w-60"
                                         src={album.cover_image ?? 'NO IMAGE'}
@@ -115,9 +134,9 @@ console.log(songs)
                                                             )
                                                         }
                                                     >
-                                                        {playingSongId ===
+                                                        {currentSong?.id ===
                                                             song.id &&
-                                                        isPlaying ? (
+                                                        playback.isPlaying ? (
                                                             <IoPauseCircleOutline className="text-2xl hover:text-orange-500" />
                                                         ) : (
                                                             <IoPlayCircleOutline className="text-2xl hover:text-green-500" />

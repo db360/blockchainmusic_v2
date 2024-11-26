@@ -13,7 +13,7 @@ export interface Song {
     album_id: number;
     user_id: number;
     title: string;
-    file_url: string;
+    url: string;
     duration: string;
     price: number;
     track_number: number;
@@ -67,20 +67,3 @@ export type PageProps<
 };
 
 
-interface AudioState {
-    urlPlay: string;
-    playingSongId: number | null;
-    isPlaying: boolean;
-    titleSongPlaying: string;
-    currentTime: number;
-    playerRef: RefObject<H5AudioPlayer> | null;
-    serializablePlayerRef: SerializablePlayerRef | null; // Cambia este tipo
-    duration: number;
-    volume: number;
-    isMuted: boolean;
-    isLoading: boolean;
-    error: string | null;
-    queue: Song[];
-    repeatMode: 'OFF' | 'ONE' | 'ALL';
-    shuffleMode: boolean;
-}

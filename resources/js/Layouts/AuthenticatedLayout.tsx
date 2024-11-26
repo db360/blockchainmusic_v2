@@ -1,6 +1,10 @@
-import { PropsWithChildren, ReactNode, useContext, useEffect, useRef, useState } from "react";
+import {
+    PropsWithChildren,
+    ReactNode,
+    useState,
+} from "react";
 import { Link, usePage } from "@inertiajs/react";
-import AudioPlayer from "react-h5-audio-player";
+import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
@@ -8,54 +12,19 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import ThemeSelector from "@/Components/ThemeSelector";
 import "react-h5-audio-player/lib/styles.css";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/src/store/store";
-import { setPlayerRef, togglePlay, updateDuration, updateTime } from "@/src/store/audio/audioSlice";
-import H5AudioPlayer from "react-h5-audio-player";
+import { playNext } from "@/src/store/audio/thunks";
+import { useAudio } from "@/context/AudioPlayerContext";
+import { AudioPlayerBar } from "@/Components/audio/AudioPlayerBar";
 
 export default function Authenticated({
     header,
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const user = usePage().props.auth.user;
-    const dispatch = useDispatch();
-    const playerRef = useRef<H5AudioPlayer>(null);
-
-    const { isPlaying, urlPlay, titleSongPlaying } = useSelector((state: RootState) => state.audio);
-
-      // Set player reference when component mounts
-      useEffect(() => {
-        const currentRef = playerRef.current ? { current: playerRef.current } : null;
-        dispatch(setPlayerRef(currentRef));
-
-        return () => {
-            dispatch(setPlayerRef({ current: null }));
-        };
-    }, [dispatch]);
-
-     // Handle player events
-     const handlePlay = () => {
-        dispatch(togglePlay(true));
-    };
-
-    const handlePause = () => {
-        dispatch(togglePlay(false));
-    };
-
-    const handleEnded = () => {
-        dispatch(togglePlay(false));
-        // You might want to add logic here to play the next song
-        // dispatch(playNextSong()) or similar
-    };
-
-    const handleTimeUpdate = (e: any) => {
-        dispatch(updateTime(e.currentTime));
-    };
-
-
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
+
 
 
     return (
@@ -154,7 +123,6 @@ export default function Authenticated({
                                                     />
                                                 </svg>
                                             </button>
-
                                         </span>
                                     </Dropdown.Trigger>
 
@@ -268,23 +236,14 @@ export default function Authenticated({
                     </div>
                 </header>
             )}
+<div className="min-h-screen bg-gray-100 dark:bg-gray-900 pb-[120px]">
+            <main className="min-w-screen overflow-hidden">{children}
 
-            <main className="overflow-hidden">{children}</main>
-            <div className="fixed bottom-0 w-full transition-all "> {/*translate-y-28 */}
-                <div className="h-6 bg-slate-300">
-                    <p className="text-center">{titleSongPlaying}</p>
-                </div>
-                <AudioPlayer
-                       autoPlay={isPlaying}
-                       src={urlPlay}
-                       ref={playerRef}
-                       onPlay={handlePlay}
-                       onPause={handlePause}
-                       onEnded={handleEnded}
-                       onListen={handleTimeUpdate}
-                       showJumpControls={true}
-                       showFilledVolume={true}
-                />
+            {!route().current("albums.uploadForm") && (
+                <AudioPlayerBar />
+            )}
+
+            </main>
             </div>
         </div>
     );

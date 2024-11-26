@@ -20,7 +20,6 @@ export const songsSlice = createSlice({
         setSongs: (state, action: PayloadAction<Song[]>) => {
             state.list = action.payload;
         },
-        // Otros reducers según necesites
     }
 });
 
