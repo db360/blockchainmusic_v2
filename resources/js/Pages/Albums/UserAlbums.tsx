@@ -1,18 +1,12 @@
 import UserAlbumCards from "@/Components/Albums/UserAlbumCards";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import { Album } from "@/types";
 import { usePage } from "@inertiajs/react";
 
 export default function UserAlbums() {
-    const { role, albums } = usePage().props;
+    const { role, albums, songs } = usePage().props
 
-    let albumData: Album[] | null = null;
+    console.log(songs)
 
-    if (role === "artist") {
-        albumData = albums.data;
-    } else {
-        albumData = albums;
-    }
 
 
     return (
@@ -25,7 +19,7 @@ export default function UserAlbums() {
             }
         >
             <section className="w-full grid grid-cols-1 gap-3 px-5">
-                <UserAlbumCards albums={albumData} />
+                <UserAlbumCards albums={albums} />
             </section>
         </Authenticated>
     );

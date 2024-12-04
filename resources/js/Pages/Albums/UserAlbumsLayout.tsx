@@ -6,7 +6,7 @@ interface Purchase {
 }
 export default function UserAlbumsLayout({
     purchasedAlbums,
-    purchasedSongs
+    purchasedSongs,
 }: {
     purchasedAlbums: Purchase[],
     purchasedSongs: Purchase[]

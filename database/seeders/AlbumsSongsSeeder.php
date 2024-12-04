@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Album;
+use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -484,62 +485,101 @@ class AlbumsSongsSeeder extends Seeder
         // Paso 1: Selecciona un género aleatorio
         $genreKeys = array_keys($genres);
 
-        $numUsers = 15;
+        $numUsers = 20;
 
-            foreach (range(1, $numUsers) as $index) {
-                $userData = [
-                    'name' => $faker->name(),
-                    'email' => $faker->email(),
-                    'role' => $faker->randomElement(['user', 'artist', 'admin']),
-                    'password' => 'password'
-                ];
+        foreach (range(1, $numUsers) as $index) {
+            User::create([
+                'name' => $faker->name(),
+                'email' => $faker->unique()->email(),
+                'role' => $faker->randomElement(['user', 'artist', 'admin']),
+                'password' => bcrypt('password'),
+                'bio' => $faker->sentence(10),
+                'wallet_address' => $faker->uuid(),
+                'social_links' => json_encode(['twitter' => $faker->url(), 'instagram' => $faker->url()]),
+            ]);
 
-                User::create($userData);
-            };
-
-
-        foreach (range(1, $numAlbums) as $index) {
-
-            $randomGenre = $genreKeys[array_rand($genreKeys)];
-            // Paso 2: Selecciona un subgénero aleatorio dentro del género elegido
-            $subgenreList = $genres[$randomGenre];
-            $randomSubgenre = $subgenreList[array_rand($subgenreList)];
-            echo $randomGenre;
-            echo $randomSubgenre;
-            $randomColor = $this->rand_color();
-            $title = $faker->sentence(2);
-            $albumData = [
-                'user_id' => $faker->numberBetween(1, 5),
-                'title' => $title,
-                'description' => $faker->sentence(6),
-                'is_published' => $faker->boolean(80),
-                'price' => $faker->randomFloat(2, 5, 10),
-                'genre' => $randomGenre,
-                'subgenre' => $randomSubgenre,
-                'cover_image' => "https://fakeimg.pl/600x400/$randomColor/909090?text=$title",
-            ];
-
-            $album = Album::create($albumData);
-
-            $numSongs = $faker->numberBetween(2, 10);
-
-            foreach (range(1, $numSongs) as $trackNumber) {
-
-                $songData = [
-                    'title'=> $faker->title(),
-                    'duration' => $faker->time('i:s'),
-                    'price' => $faker->randomFloat(2, 1, 3),
-                    'genre' => $albumData['genre'],
-                    'subgenre' => $albumData['subgenre'],
-                    'user_id' => $faker->numberBetween(1,5),
-                    'album_id' => $album['id'],
-                    'file_url' => 'https://fakeurl.com/6516514645654',
-                    'track_number' => $trackNumber
-                ];
-
-                // Crear la canción asociada al álbum
-                Song::create($songData);
-            };
         };
+
+        $artists = User::where('role', 'artist')->get();
+
+        foreach($artists as $artist) {
+            foreach (range(1, 5) as $index) {
+                $randomColor = $this->rand_color();
+                $title = $faker->sentence(2);
+                $slug = \Str::slug($title) . '-' . $faker->unique()->randomNumber();
+
+                $album = Album::create([
+                    'user_id' => $artist->id,
+                    'title' => $title,
+                    'slug' => $slug,
+                    'description' => $faker->paragraph(),
+                    'release_date' => $faker->date(),
+                    'price' => $faker->randomFloat(2, 5, 20),
+                    'genre' => $faker->word(),
+                    'subgenre' => $faker->word(),
+                    'cover_image' => "https://fakeimg.pl/600x400/$randomColor/909090?text=$title",
+                    'is_published' => $faker->boolean(80),
+                ]);
+
+                // Crear canciones asociadas al álbum
+                foreach (range(1, $faker->numberBetween(2, 10)) as $trackNumber) {
+                    Song::create([
+                        'album_id' => $album->id,
+                        'user_id' => $artist->id,
+                        'title' => $faker->sentence(3),
+                        'file_url' => '/storage/audio/audio-' . $faker->uuid() . '.mp3',
+                        'duration' => $faker->time('i:s'),
+                        'price' => $faker->randomFloat(2, 0.99, 2.99),
+                        'track_number' => $trackNumber,
+                        'genre' => $album->genre,
+                        'subgenre' => $album->subgenre,
+                        'play_count' => $faker->numberBetween(0, 1000),
+                    ]);
+                }
+
+                // Crear playlists para cada artista
+                $playlist = Playlist::create([
+                    'user_id' => $artist->id,
+                    'title' => $faker->sentence(3),
+                    'slug' => \Str::slug($faker->sentence(3)),
+                    'description' => $faker->paragraph(),
+                    'cover_image' => "https://fakeimg.pl/600x400/$randomColor/909090?text=Playlist",
+                    'is_public' => $faker->boolean(80),
+                ]);
+
+                // Asignar canciones a la playlist
+                $songs = $album->songs()->inRandomOrder()->limit(3)->get();
+                foreach ($songs as $song) {
+                    $playlist->songs()->attach($song->id, ['position' => $faker->numberBetween(1, 10)]);
+                }
+            }
+        }
+
+        // Crear compras aleatorias para usuarios
+        foreach (range(1, 10) as $index) {
+            $user = User::where('role', 'user')->inRandomOrder()->first();
+            $song = Song::inRandomOrder()->first();
+
+            $user->purchases()->create([
+                'purchaseable_id' => $song->id,
+                'purchaseable_type' => Song::class,
+                'amount' => $song->price,
+                'status' => $faker->randomElement(['pending', 'completed', 'failed']),
+                'payment_method' => $faker->randomElement(['paypal', 'crypto']),
+                'transaction_id' => $faker->uuid(),
+            ]);
+        }
+
+        // Crear favoritos
+        foreach (range(1, 10) as $index) {
+            $user = User::where('role', 'user')->inRandomOrder()->first();
+            $song = Song::inRandomOrder()->first();
+
+            $user->favorites()->create([
+                'favoritable_id' => $song->id,
+                'favoritable_type' => Song::class,
+            ]);
+        }
+
     }
 }

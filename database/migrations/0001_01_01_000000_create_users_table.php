@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('profile_picture')->nullable();
             $table->text('bio')->nullable();
             $table->string('wallet_address')->nullable();
-            $table->json('socal_links')->nullable();
+            $table->json('social_links')->nullable();
 
             //Socials Auth Fields
             $table->string('provider')->nullable();

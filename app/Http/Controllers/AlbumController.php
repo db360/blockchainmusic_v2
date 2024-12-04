@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Purchase;
+use App\Models\Song;
 use Google\Cloud\Storage\Bucket;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -19,11 +20,11 @@ class AlbumController extends Controller
             ->latest()
             ->paginate(12);
 
-                // Obtener los IDs de los álbumes que le gustan al usuario
+        // Obtener los IDs de los álbumes que le gustan al usuario
         $userLikes = $user ? $user->favorites()
-        ->where('favoritable_type', Album::class)
-        ->pluck('favoritable_id')
-        ->toArray() : [];
+            ->where('favoritable_type', Album::class)
+            ->pluck('favoritable_id')
+            ->toArray() : [];
 
 
 
@@ -36,6 +37,7 @@ class AlbumController extends Controller
     {
 
         $user = Auth::user();
+
 
 
         if ($user->role === 'artist') {
@@ -53,21 +55,27 @@ class AlbumController extends Controller
         }
 
         if ($user->role === 'user') {
-            // Obtenemos todas las compras del usuario con sus relaciones
             $purchases = Purchase::where('user_id', $user->id)
-                ->with('purchaseable')  // Carga la relación polimórfica
-                ->get();
+            ->with('purchaseable') // Carga la relación polimórfica
+            ->get();
 
-            // Separamos albums y canciones
-            $purchasedAlbums = $purchases
-                ->where('purchaseable_type', 'App\Models\Album')
-                ->pluck('purchaseable');
+        $purchasedAlbums = $purchases->filter(function ($purchase) {
+            return $purchase->purchaseable_type === Album::class;
+        })->map(function ($purchase) {
+            return $purchase->purchaseable;
+        });
 
+        $purchasedSongs = $purchases->filter(function ($purchase) {
+            return $purchase->purchaseable_type === Song::class;
+        })->map(function ($purchase) {
+            return $purchase->purchaseable;
+        });
 
-            return Inertia::render('Albums/UserAlbums', [
-                'albums' => $purchasedAlbums,
-                'role' => $user->role
-            ]);
+        return Inertia::render('Albums/UserAlbums', [
+            'albums' => $purchasedAlbums->values(), // Devuelve solo los valores del array
+            'songs' => $purchasedSongs->values(),
+            'role' => $user->role
+        ]);
         }
     }
 

@@ -42,4 +42,8 @@ class Purchase extends Model
     public function scopeCompleted($query) {
         return $query->where('status', 'completed');
     }
+
+    public function scopePending($query) {
+        return $query->where('status', 'pending');
+    }
 }

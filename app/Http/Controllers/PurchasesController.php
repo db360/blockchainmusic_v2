@@ -33,13 +33,13 @@ class PurchasesController extends Controller
             ->get();
 
         // Separamos albums y canciones
-        $purchasedAlbums = $purchases
-            ->where('purchaseable_type', 'App\Models\Album')
-            ->pluck('purchaseable');
+        $purchasedAlbums = $purchases->filter(function ($purchase) {
+            return $purchase->purchaseable_type === 'App\Models\Album';
+        });
 
-        $purchasedSongs = $purchases
-            ->where('purchaseable_type', 'App\Models\Song')
-            ->pluck('purchaseable');
+        $purchasedSongs = $purchases->filter(function ($purchase) {
+            return $purchase->purchaseable_type === 'App\Models\Song';
+        });
 
         return Inertia::render('Albums/UserPurchases', [
             'purchasedAlbums' => $purchasedAlbums,

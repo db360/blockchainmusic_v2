@@ -67,3 +67,90 @@ export type PageProps<
 };
 
 
+
+export interface Sale {
+    id: string;
+    user_id: number;
+    purchaseable_type: string;
+    amount: string;
+    created_at: string;
+    metadata: null;
+    payment_method: string;
+    status: 'completed' | 'failed' | 'pending';
+    transaction_id: string;
+    updated_at: string;
+    purchaseable: {
+      id: number;
+      album_id: number;
+      user_id: number;
+      created_at: string;
+      deleted_at: null;
+      duration: string;
+      file_url: string;
+      genre: string;
+      lyrics: null;
+      metadata: null;
+      play_count: number;
+      price: string;
+      subgenre: string;
+      title: string;
+      track_number: number;
+      updated_at: string;
+      album: {
+        id: number;
+        user_id: number;
+        title: string;
+        cover_image: string;
+        created_at: string;
+        deleted_at: null;
+        description: string;
+        genre: string;
+        is_published: boolean;
+        metadata: null;
+        price: string;
+        release_date: string;
+        slug: string;
+        subgenre: string;
+        updated_at: string;
+        user: {
+          id: number;
+          name: string;
+          email: string;
+        };
+      };
+    };
+  }
+
+  export type Sales = Sale[];
+
+  export interface Purchase {
+  id: number;
+  user_id: number;
+  amount: number;
+  payment_method: "paypal" | "crypto";
+  purchaseable_id: number;
+  purchaseable_type: "App\\Models\\Album" | "App\\Models\\Song";
+  status: "pending" | "completed" | "failed";
+  transaction_id: string;
+  created_at: string;
+  updated_at: string;
+  metadata?: Record<string, any> | null;
+
+  // Relación polimórfica con Album o Song
+  purchaseable: {
+    user: User;
+    title: string;
+    cover_image: string;
+  }
+}
+
+// Tipos extendidos para manejar relaciones adicionales
+export interface AlbumWithRelations extends Album {
+  user: User;
+  songs: Song[]; // Se incluye opcionalmente por si está presente
+}
+
+export interface SongWithRelations extends Song {
+  album: Album;
+  user: User;
+}

@@ -29,27 +29,32 @@ Route::get('/', function () {
 
 Route::middleware('auth')->group(function () {
 
+    // PROFILE ROUTE
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // AVATAR
+    // AVATAR ROUTE
     Route::post('/avatar', [AvatarController::class, 'update'])->name('avatar.update');
     Route::get('/avatar-get', [AvatarController::class, 'getAvatar'])->name('avatar.get');
 
     // BIOGRAPHY
     Route::post('/bio', [BioController::class, 'update'])->name('bio.update');
 
+    // DASHBOARD ROUTES
     Route::get('/explore', [AlbumController::class, 'index'])->name('explore.index');
     Route::get('/albums', [AlbumController::class, 'userAlbums'])->name('albums.user');
     Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
     Route::get('/history', [PurchasesController::class, 'artistSales'])->name('sales.artist');
 
+    // UPLOAD ROUTE
     Route::get('/upload', [UploadController::class, 'uploadForm'])->name('albums.uploadForm');
     Route::post('/upload', [UploadController::class, 'upload'])->name('albums.upload')->middleware(CheckArtistRole::class);
 
+    // SHOW ALBUM ROUTE
     Route::get('/album/{id}', [AlbumController::class, 'showAlbum'])->name('albums.showAlbum');
 
+    // MARK AS FAVORITE
     Route::post('/albums/{album}/favorite', [UserController::class, 'toggleLike'])
     ->name('favorites.toggle');
 
