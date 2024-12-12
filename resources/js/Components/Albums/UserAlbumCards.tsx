@@ -4,8 +4,6 @@ import TimeAgo from 'react-timeago';
 
 export default function UserAlbumCards({ albums }: { albums: Album[] | null}) {
 
-    console.log(albums)
-
     return albums && albums.length > 0 ? (
         albums.map((album, index) => (
             <Link href={`/album/${album.id}`} key={index} >

@@ -1,14 +1,14 @@
 
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
+import { Head, Link } from "@inertiajs/react";
 
 import { IoPlayCircleOutline, IoPauseCircleOutline } from "react-icons/io5";
 
-import { TbCash } from "react-icons/tb";
+import { TbCash, TbShoppingCart } from "react-icons/tb";
 import { Album, Song, Songs, User } from "@/types";
 import { AppDispatch, RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
-import { setQueue, updatePlayback } from "@/src/store/audio/audioSlice";
+import { updatePlayback } from "@/src/store/audio/audioSlice";
 import { playQueue, playSong } from "@/src/store/audio/thunks";
 
 
@@ -101,6 +101,7 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                 Buy
                                             </th>
                                         ) : null}
+                                        <th>Buy</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -148,6 +149,7 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                         <button title="buy"><TbCash className="hover:text-green-500 text-center text-2xl"/></button>
                                                     </td>
                                                 ) : null}
+                                                <td><Link href=""><TbShoppingCart  className="hover:text-green-500 text-center text-2xl"/></Link></td>
                                             </tr>
                                         ))
                                     ) : (

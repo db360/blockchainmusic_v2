@@ -1,10 +1,5 @@
-import {
-    PropsWithChildren,
-    ReactNode,
-    useState,
-} from "react";
+import { PropsWithChildren, ReactNode, useState } from "react";
 import { Link, usePage } from "@inertiajs/react";
-import AudioPlayer, { RHAP_UI } from "react-h5-audio-player";
 
 import ApplicationLogo from "@/Components/ApplicationLogo";
 import Dropdown from "@/Components/Dropdown";
@@ -12,9 +7,8 @@ import NavLink from "@/Components/NavLink";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import ThemeSelector from "@/Components/ThemeSelector";
 import "react-h5-audio-player/lib/styles.css";
-import { playNext } from "@/src/store/audio/thunks";
-import { useAudio } from "@/context/AudioPlayerContext";
 import { AudioPlayerBar } from "@/Components/audio/AudioPlayerBar";
+import CartBadge from "@/Components/cart/CartBadge";
 
 export default function Authenticated({
     header,
@@ -24,8 +18,6 @@ export default function Authenticated({
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
-
-
 
     return (
         <div className="h-full min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -142,6 +134,7 @@ export default function Authenticated({
                                     </Dropdown.Content>
                                 </Dropdown>
                             </div>
+                                <CartBadge />
                         </div>
 
                         <div className="-me-2 flex items-center sm:hidden">
@@ -236,14 +229,14 @@ export default function Authenticated({
                     </div>
                 </header>
             )}
-<div className="min-h-screen bg-gray-100 dark:bg-gray-900 pb-[120px]">
-            <main className="min-w-screen overflow-hidden">{children}
+            <div className="min-h-screen bg-gray-100 dark:bg-gray-900 pb-[120px]">
+                <main className="min-w-screen overflow-hidden">
+                    {children}
 
-            {!route().current("albums.uploadForm") && (
-                <AudioPlayerBar />
-            )}
-
-            </main>
+                    {!route().current("albums.uploadForm") && (
+                        <AudioPlayerBar />
+                    )}
+                </main>
             </div>
         </div>
     );

@@ -63,17 +63,17 @@ class AlbumController extends Controller
             return $purchase->purchaseable_type === Album::class;
         })->map(function ($purchase) {
             return $purchase->purchaseable;
-        });
+        })->values();
 
         $purchasedSongs = $purchases->filter(function ($purchase) {
             return $purchase->purchaseable_type === Song::class;
         })->map(function ($purchase) {
             return $purchase->purchaseable;
-        });
+        })->values();
 
         return Inertia::render('Albums/UserAlbums', [
-            'albums' => $purchasedAlbums->values(), // Devuelve solo los valores del array
-            'songs' => $purchasedSongs->values(),
+            'albums' => $purchasedAlbums,
+            'songs' => $purchasedSongs,
             'role' => $user->role
         ]);
         }

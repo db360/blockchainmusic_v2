@@ -5,7 +5,8 @@ import { usePage } from "@inertiajs/react";
 export default function UserAlbums() {
     const { role, albums, songs } = usePage().props
 
-    console.log(songs)
+    console.log('SONGS: ', songs)
+    console.log('ALBUMS: ', albums)
 
 
 

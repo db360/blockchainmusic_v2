@@ -58,6 +58,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/albums/{album}/favorite', [UserController::class, 'toggleLike'])
     ->name('favorites.toggle');
 
+
+    // CART
+
+    Route::get('/cart', [PurchasesController::class, 'showCart'])->name('purchases.cart');
+
 });
 
 // SOCIAL LOGINS ROUTES

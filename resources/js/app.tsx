@@ -8,6 +8,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { Provider } from "react-redux";
 import { store } from "./src/store/store";
 import { AudioPlayerProvider } from "./context/AudioPlayerContext";
+import { CartProvider } from "react-use-cart";
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
 
@@ -22,13 +23,15 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-                <Provider store={store}>
-                    <ThemeProvider>
-                        <AudioPlayerProvider>
+            <Provider store={store}>
+                <ThemeProvider>
+                    <AudioPlayerProvider>
+                        <CartProvider>
                             <App {...props} />
-                        </AudioPlayerProvider>
-                    </ThemeProvider>
-                </Provider>
+                        </CartProvider>
+                    </AudioPlayerProvider>
+                </ThemeProvider>
+            </Provider>
         );
     },
     progress: {

@@ -112,16 +112,16 @@ export interface Sale {
         slug: string;
         subgenre: string;
         updated_at: string;
-        user: {
-          id: number;
-          name: string;
-          email: string;
-        };
+
+      };
+      user: {
+        id: number;
+        name: string;
+        email: string;
       };
     };
   }
 
-  export type Sales = Sale[];
 
   export interface Purchase {
   id: number;

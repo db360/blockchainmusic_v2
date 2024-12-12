@@ -18,8 +18,18 @@ class PurchasesController extends Controller
             $query->where('user_id', $user->id);
         })->with('purchaseable')->get();
 
+          // Separamos albums y canciones
+          $salesAlbums = $sales->filter(function ($purchase) {
+            return $purchase->purchaseable_type === 'App\Models\Album';
+        })->values();
+
+        $salesSongs = $sales->filter(function ($purchase) {
+            return $purchase->purchaseable_type === 'App\Models\Song';
+        })->values();
+
         return Inertia::render('Albums/ArtistSales', [
-            'sales' => $sales
+            'salesAlbums' => $salesAlbums,
+            'salesSongs' => $salesSongs
         ]);
     }
 
@@ -35,15 +45,21 @@ class PurchasesController extends Controller
         // Separamos albums y canciones
         $purchasedAlbums = $purchases->filter(function ($purchase) {
             return $purchase->purchaseable_type === 'App\Models\Album';
-        });
+        })->values();
 
         $purchasedSongs = $purchases->filter(function ($purchase) {
             return $purchase->purchaseable_type === 'App\Models\Song';
-        });
+        })->values();
 
         return Inertia::render('Albums/UserPurchases', [
             'purchasedAlbums' => $purchasedAlbums,
             'purchasedSongs' => $purchasedSongs
         ]);
     }
+
+    public function showCart() {
+        return Inertia::render('Purchases/Cart');
+    }
+
+
 }
