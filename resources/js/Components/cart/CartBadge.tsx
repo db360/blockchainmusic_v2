@@ -4,7 +4,10 @@ import { useCart } from "react-use-cart";
 
 export default function CartBadge() {
 
-const {isEmpty, totalItems} = useCart();
+
+    const {isEmpty, totalItems} = useCart();
+
+
 
     return (
         <div className="hover:cursor-pointer">

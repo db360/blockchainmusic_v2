@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Album } from "@/types";
-import { Link, router } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
+import { useCart } from "react-use-cart";
 
 interface AlbumsCardProps {
     albums: Album[];
@@ -47,6 +48,8 @@ export default function AlbumsCard({
             document.removeEventListener("click", handleClickOutside);
         };
     }, []);
+
+    const { addItem } = useCart();
 
     return (
         <>
@@ -162,7 +165,7 @@ export default function AlbumsCard({
                         href={`/album/${selectedAlbum.id}`}
                         className="whitespace-nowrap px-3 py-1 text-black dark:text-gray-300 rounded-md hover:bg-blue-600 transition block text-center"
                     >
-                        Ver Album
+                        Ver Album 
                     </Link>
                     <Link
                         href={`/album/${selectedAlbum.id}`}
@@ -170,6 +173,24 @@ export default function AlbumsCard({
                     >
                         Añadir a Playlist
                     </Link>
+                    <button
+                          onClick={() => {
+                            addItem(
+                                {
+                                    id: selectedAlbum.id.toString(),
+                                    price: selectedAlbum.price,
+                                    type: 'Album',
+                                    cover_image: selectedAlbum.cover_image,
+                                    name: selectedAlbum.title,
+                                },
+                                1
+                            );
+                            setIsOpen(false);
+                        }}
+                        className="whitespace-nowrap px-3 py-1 text-black dark:text-gray-300 rounded-md hover:bg-blue-600 transition block text-center"
+                    >
+                        Añadir al Carrito
+                    </button>
                 </div>
             )}
         </>

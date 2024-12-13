@@ -10,6 +10,7 @@ import { AppDispatch, RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePlayback } from "@/src/store/audio/audioSlice";
 import { playQueue, playSong } from "@/src/store/audio/thunks";
+import { useCart } from "react-use-cart";
 
 
 
@@ -17,6 +18,8 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
 
     const dispatch: AppDispatch = useDispatch();
     const {currentSong, playback, queue, settings} = useSelector((state: RootState)  => state.audio);
+
+    const {addItem} = useCart();
 
     console.log('Current SONG: ', currentSong)
     console.log('playback: ', playback)
@@ -149,7 +152,11 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                         <button title="buy"><TbCash className="hover:text-green-500 text-center text-2xl"/></button>
                                                     </td>
                                                 ) : null}
-                                                <td><Link href=""><TbShoppingCart  className="hover:text-green-500 text-center text-2xl"/></Link></td>
+                                                <td><Link href="" onClick={() => addItem( {
+                                                    id: song.id.toString(),
+                                                    price: song.price,
+                                                    name: song.title
+                                                }, 1)}><TbShoppingCart  className="hover:text-green-500 text-center text-2xl"/></Link></td>
                                             </tr>
                                         ))
                                     ) : (

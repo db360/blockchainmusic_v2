@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Album;
 use App\Models\Purchase;
+use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
@@ -58,7 +60,51 @@ class PurchasesController extends Controller
     }
 
     public function showCart() {
+
         return Inertia::render('Purchases/Cart');
+
+    }
+
+    public function checkout(Request $request) {
+
+        $request->validate([
+            'items' => 'required|array',
+            'total' => 'required|numeric',
+            'tax' => 'required|numeric'
+        ]);
+
+        $items = $request->input('items');
+        $totalRequest = $request->input('total');
+        $tax = $request->input('tax');
+
+        $albums = [];
+        $songs = [];
+        $total = 0.00;
+
+        foreach($items as $item) {
+            if($item['type'] === 'Album') {
+                $album = Album::findOrFail($item['id']);
+                $total += $album->price;
+                $albums[] = $album;
+            } else {
+                $song = Song::findOrFail($item['id']);
+                $total += $song->price;
+                $songs[] = $song;
+            }
+        }
+
+        if(count($albums) > 0 || count($songs) > 0) {
+            if($total === $totalRequest && $tax === $total * 0.005) {
+                dd('DE LUJO, TOTAL IGUAL');
+            }
+        }
+
+        // VERIFICADO CON LA BASE DE DATOS
+        // TODO: CHECKOUT CON STRIPE O METAMASK
+
+
+        return Inertia::render('Purchases/Checkout');
+
     }
 
 

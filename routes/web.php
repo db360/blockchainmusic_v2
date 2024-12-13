@@ -60,8 +60,8 @@ Route::middleware('auth')->group(function () {
 
 
     // CART
-
     Route::get('/cart', [PurchasesController::class, 'showCart'])->name('purchases.cart');
+    Route::post('/checkout', [PurchasesController::class, 'checkout'])->name('purchases.checkout');
 
 });
 
