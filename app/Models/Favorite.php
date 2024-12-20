@@ -27,4 +27,14 @@ class Favorite extends Model
     {
         return $this->morphTo();
     }
+
+    public function scopeForUser($query, $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('favoritable_type', $type);
+    }
 }

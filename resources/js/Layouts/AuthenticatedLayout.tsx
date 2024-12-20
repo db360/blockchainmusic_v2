@@ -40,10 +40,10 @@ export default function Authenticated({
                                 </NavLink>
 
                                 <NavLink
-                                    href={route("albums.user")}
-                                    active={route().current("albums.user")}
+                                    href={route("user.library")}
+                                    active={route().current("user.library")}
                                 >
-                                    My Albums
+                                    My Library
                                 </NavLink>
 
                                 {user.role === "user" && (

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Favorite;
+use App\Models\Playlist;
 use App\Models\Purchase;
 use App\Models\Song;
 use Google\Cloud\Storage\Bucket;
@@ -11,9 +13,15 @@ use Inertia\Inertia;
 
 class AlbumController extends Controller
 {
+    private function userLikes(string $type) {
+        $user = Auth::user();
+
+        $favorites = $user->favorites()->get()->toArray();
+
+        return $favorites;
+    }
     public function index()
     {
-        $user = Auth::user();
 
         $albums = Album::with('user')
             ->where('is_published', true)
@@ -21,12 +29,7 @@ class AlbumController extends Controller
             ->paginate(12);
 
         // Obtener los IDs de los álbumes que le gustan al usuario
-        $userLikes = $user ? $user->favorites()
-            ->where('favoritable_type', Album::class)
-            ->pluck('favoritable_id')
-            ->toArray() : [];
-
-
+        $userLikes = $this->userLikes('Album');
 
         return Inertia::render('Albums/Index', [
             'albums' => $albums,
@@ -56,26 +59,26 @@ class AlbumController extends Controller
 
         if ($user->role === 'user') {
             $purchases = Purchase::where('user_id', $user->id)
-            ->with('purchaseable') // Carga la relación polimórfica
-            ->get();
+                ->with('purchaseable') // Carga la relación polimórfica
+                ->get();
 
-        $purchasedAlbums = $purchases->filter(function ($purchase) {
-            return $purchase->purchaseable_type === Album::class;
-        })->map(function ($purchase) {
-            return $purchase->purchaseable;
-        })->values();
+            $purchasedAlbums = $purchases->filter(function ($purchase) {
+                return $purchase->purchaseable_type === Album::class;
+            })->map(function ($purchase) {
+                return $purchase->purchaseable;
+            })->values();
 
-        $purchasedSongs = $purchases->filter(function ($purchase) {
-            return $purchase->purchaseable_type === Song::class;
-        })->map(function ($purchase) {
-            return $purchase->purchaseable;
-        })->values();
+            $purchasedSongs = $purchases->filter(function ($purchase) {
+                return $purchase->purchaseable_type === Song::class;
+            })->map(function ($purchase) {
+                return $purchase->purchaseable;
+            })->values();
 
-        return Inertia::render('Albums/UserAlbums', [
-            'albums' => $purchasedAlbums,
-            'songs' => $purchasedSongs,
-            'role' => $user->role
-        ]);
+            return Inertia::render('Albums/UserAlbums', [
+                'albums' => $purchasedAlbums,
+                'songs' => $purchasedSongs,
+                'role' => $user->role
+            ]);
         }
     }
 
@@ -102,12 +105,39 @@ class AlbumController extends Controller
             return $song;
         });
 
+        $userLikes = $this->userLikes('Song');
+
 
 
         return Inertia::render('Albums/ShowAlbum', [
             'album' => $album,
             'songs' => $songsWithSignedUrls,
-            'user' => $album->user
+            'user' => $album->user,
+            'userLikes' => $userLikes
+        ]);
+    }
+
+    public function userLibrary()
+    {
+
+        $user = Auth::user();
+
+
+        // USER FAVORITES
+        $userFavAlbums = $user->favorites()->where('favoritable_type', 'Album')->with('albums')->get();
+        $userFavSongs = $user->favorites()->where('favoritable_type', 'Song')->get();
+
+
+        // USER PLAYLISTS WITH SONGS
+        $userPlaylists = $user->playlists()->with(['songs' => function($query) {
+            $query->orderBy('pivot_position');
+        }])
+        ->get();
+
+        return Inertia::render('Library/Library', [
+            'userFavAlbums' => $userFavAlbums,
+            'userFavSongs' => $userFavSongs,
+            'userPlaylists' => $userPlaylists
         ]);
     }
 }

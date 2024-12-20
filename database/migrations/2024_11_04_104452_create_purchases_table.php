@@ -14,14 +14,15 @@ return new class extends Migration
         Schema::create('purchases', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->morphs('purchaseable');
             $table->string('transaction_id')->unique();
-            $table->decimal('amount', 8, 2);
+            $table->decimal('total', 8, 2);
             $table->string('status');
             $table->string('payment_method');
             $table->json('metadata')->nullable();
             $table->timestamps();
         });
+
+
     }
 
     /**

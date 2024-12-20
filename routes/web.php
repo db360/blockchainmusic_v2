@@ -43,7 +43,8 @@ Route::middleware('auth')->group(function () {
 
     // DASHBOARD ROUTES
     Route::get('/explore', [AlbumController::class, 'index'])->name('explore.index');
-    Route::get('/albums', [AlbumController::class, 'userAlbums'])->name('albums.user');
+    // LIBRARY
+    Route::get('/library', [AlbumController::class, 'userLibrary'])->name('user.library');
     Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
     Route::get('/history', [PurchasesController::class, 'artistSales'])->name('sales.artist');
 
@@ -55,7 +56,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/album/{id}', [AlbumController::class, 'showAlbum'])->name('albums.showAlbum');
 
     // MARK AS FAVORITE
-    Route::post('/albums/{album}/favorite', [UserController::class, 'toggleLike'])
+    Route::post('{type}/{id}/favorite', [UserController::class, 'toggleLike'])
+    ->name('favorites.toggle')->where('type', 'album|song')
     ->name('favorites.toggle');
 
 

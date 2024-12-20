@@ -1,9 +1,9 @@
 import AlbumsCard from "@/Components/Albums/AlbumCards";
-import { Album } from "@/types";
+import { Album, Like } from "@/types";
 
 interface Props {
     albums: Album[];
-    userLikes: number[]; // Array de IDs de álbumes que le gustan al usuario
+    userLikes: Like[]; // Array de IDs de álbumes que le gustan al usuario
 }
 
 export default function ExplorerLayout({ albums, userLikes }: Props) {

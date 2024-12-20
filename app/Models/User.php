@@ -83,15 +83,20 @@ class User extends Authenticatable
     public function hasLikedAlbum(Album $album): bool
     {
         return $this->favorites()
-            ->where('favoritable_type', Album::class)
             ->where('favoritable_id', $album->id)
+            ->exists();
+    }
+    public function hasLikedSong(Song $song): bool
+    {
+        return $this->favorites()
+            ->where('favoritable_id', $song->id)
             ->exists();
     }
 
     public function favorite($model)
     {
         return $this->favorites()->create([
-            'favoritable_type' => get_class($model),
+            'favoritable_type' => class_basename($model),
             'favoritable_id' => $model->id
         ]);
     }
@@ -99,7 +104,7 @@ class User extends Authenticatable
     public function unfavorite($model)
     {
         return $this->favorites()
-            ->where('favoritable_type', get_class($model))
+            ->where('favoritable_type', class_basename($model))
             ->where('favoritable_id', $model->id)
             ->delete();
     }
@@ -126,14 +131,14 @@ class User extends Authenticatable
     public function purchasedAlbums()
     {
         return $this->purchases()
-        ->where('purchaseable_type', Album::class)
+        ->where('purchaseable_type', 'Album')
         ->with('purchaseable');
     }
 
     public function purchasedSongs()
     {
         return $this->purchases()
-        ->where('purchaseable_type', Song::class)
+        ->where('purchaseable_type', 'Song')
         ->with('purchaseable');
     }
 }

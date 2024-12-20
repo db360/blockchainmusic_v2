@@ -1,15 +1,16 @@
 import CartCard from "@/Components/cart/CartCard";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
 import { Link, router } from "@inertiajs/react";
-import { useCart } from "react-use-cart";
+import { Item, useCart } from "react-use-cart";
 
 export default function Cart() {
     const { isEmpty, items, cartTotal } = useCart();
 
-    console.log(cartTotal);
+
+    console.log(items);
 
     const cartItemsString = localStorage.getItem('react-use-cart');
-        let cartItems: any[] = [];
+        let cartItems: Item[] = [];
 
         if (cartItemsString) {
             try {
@@ -32,8 +33,8 @@ export default function Cart() {
         if (cartItems && cartItems.length > 0) {
             router.post('/checkout', {
                 items: cartItems,
-                total: cartTotal,
-                tax: cartTotal * 0.005
+                total: cartTotal.toFixed(2),
+                tax: (cartTotal * 0.05).toFixed(2)
             })
         } else {
             alert('TU CARRITO ESTÁ VACÍO')
@@ -382,21 +383,21 @@ export default function Cart() {
                                 <div className="space-y-4">
                                     <div className="space-y-2">
 
-                                        <dl className="flex items-center justify-between gap-4">
+                                        {/* <dl className="flex items-center justify-between gap-4">
                                             <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                                                 Savings
                                             </dt>
                                             <dd className="text-base font-medium text-green-600">
                                                 -$299.00
                                             </dd>
-                                        </dl>
+                                        </dl> */}
 
                                         <dl className="flex items-center justify-between gap-4">
                                             <dt className="text-base font-normal text-gray-500 dark:text-gray-400">
                                                 Tax
                                             </dt>
                                             <dd className="text-base font-medium text-gray-900 dark:text-white">
-                                                { cartTotal * 0.005}
+                                                { (cartTotal * 0.05).toFixed(2)}
                                             </dd>
                                         </dl>
                                     </div>
@@ -406,7 +407,7 @@ export default function Cart() {
                                             Total
                                         </dt>
                                         <dd className="text-base font-bold text-gray-900 dark:text-white">
-                                            {cartTotal} €
+                                            {cartTotal.toFixed(2)} €
                                         </dd>
                                     </dl>
                                 </div>

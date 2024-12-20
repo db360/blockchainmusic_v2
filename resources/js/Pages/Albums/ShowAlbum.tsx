@@ -5,30 +5,31 @@ import { Head, Link } from "@inertiajs/react";
 import { IoPlayCircleOutline, IoPauseCircleOutline } from "react-icons/io5";
 
 import { TbCash, TbShoppingCart } from "react-icons/tb";
-import { Album, Song, Songs, User } from "@/types";
+import { Album, Like, Song, Songs, User } from "@/types";
 import { AppDispatch, RootState } from "@/src/store/store";
 import { useDispatch, useSelector } from "react-redux";
 import { updatePlayback } from "@/src/store/audio/audioSlice";
 import { playQueue, playSong } from "@/src/store/audio/thunks";
 import { useCart } from "react-use-cart";
+import LikeButtonLink from "@/Components/Favorite/LikeButtonLink";
 
 
 
-export default function ShowAlbum({ album, user, songs }:{album:Album, user:User, songs:Songs}) {
+export default function ShowAlbum({ album, user, songs, userLikes }:{album:Album, user:User, songs:Songs, userLikes: Like[]}) {
 
     const dispatch: AppDispatch = useDispatch();
     const {currentSong, playback, queue, settings} = useSelector((state: RootState)  => state.audio);
 
     const {addItem} = useCart();
 
-    console.log('Current SONG: ', currentSong)
-    console.log('playback: ', playback)
-    console.log('queue: ', queue)
-    console.log('settings: ', settings)
+    // console.log('Current SONG: ', currentSong)
+    // console.log('playback: ', playback)
+    // console.log('queue: ', queue)
+    // console.log('settings: ', settings)
 
     const handleAddToQueue = () => {
         dispatch(playQueue(songs));
-        console.log(queue);
+        // console.log(queue);
       };
 
       const handlePlayPause = (song: Song) => {
@@ -89,6 +90,9 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                         <th scope="col" className="px-6 py-3">
                                             Title
                                         </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Like
+                                        </th>
                                         <th>Duration</th>
                                         <th scope="col" className="px-6 py-3">
                                             Price
@@ -107,6 +111,8 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                         <th>Buy</th>
                                     </tr>
                                 </thead>
+
+
                                 <tbody>
                                     {songs && songs.length > 0 ? (
                                         songs.map((song) => (
@@ -120,8 +126,12 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                 >
                                                     {song.track_number}
                                                 </td>
-                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {song.title}
+                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex gap-4">
+                                                    <p>{song.title}</p>
+
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                <LikeButtonLink album={null} song={song} type="song" userLikes={userLikes}/>
                                                 </td>
 
                                                 <td className="px-6 py-4">
@@ -155,7 +165,9 @@ export default function ShowAlbum({ album, user, songs }:{album:Album, user:User
                                                 <td><Link href="" onClick={() => addItem( {
                                                     id: song.id.toString(),
                                                     price: song.price,
-                                                    name: song.title
+                                                    name: song.title,
+                                                    type: 'Song',
+                                                    cover_image: album.cover_image
                                                 }, 1)}><TbShoppingCart  className="hover:text-green-500 text-center text-2xl"/></Link></td>
                                             </tr>
                                         ))

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
+use App\Models\Song;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,27 +12,35 @@ use Log;
 
 class UserController extends Controller
 {
-    public function toggleLike(Album $album):RedirectResponse
+    public function toggleLike(string $type, int $id): RedirectResponse
     {
         try {
             $user = Auth::user();
 
-            if ($user->hasLikedAlbum($album)) {
-                $user->unfavorite($album);
-                $message = 'Album removed from favorites.';
+            $modelClass = match ($type) {
+                'album' => Album::class,
+                'song' => Song::class,
+                default => throw new \Exception('Invalid model type')
+            };
+
+            $model = $modelClass::findOrFail($id);
+
+            if ($user->{'hasLiked' . class_basename($modelClass)}($model)) {
+                $user->unfavorite($model);
+                $message = class_basename($modelClass) . ' removed from favorites.';
             } else {
-                $user->favorite($album);
-                $message = 'Album added to favorites.';
+                $user->favorite($model);
+                $message = class_basename($modelClass) . ' added to favorites.';
             }
 
             return redirect()->back()->with('success', $message);
         } catch (\Exception $e) {
-            Log::error('Error toggling album favorite status:', [
-                'album_id' => $album->id,
-                'user_id' => $user->id,
+            Log::error('Error toggling favorite status:', [
+                'model_id' => $id,
+                'model_type' => $type,
+                'user_id' => $user?->id,
                 'error' => $e->getMessage()
             ]);
-
             return redirect()->back()->with('error', 'Unable to update favorite status. Please try again.');
         }
     }

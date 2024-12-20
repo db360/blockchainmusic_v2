@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Album;
 use App\Models\Purchase;
+use App\Models\PurchaseItem;
 use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,18 +16,22 @@ class PurchasesController extends Controller
     {
         $user = Auth::user();
 
-        // Suponiendo que las ventas estén en la tabla de 'purchases'
-        $sales = Purchase::whereHas('purchaseable', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->with('purchaseable')->get();
+        // Obtener todos los purchase items donde el elemento comprado pertenece al artista actual
+        $purchaseItems = PurchaseItem::whereHasMorph(
+            'purchaseable',
+            [Album::class, Song::class],
+            function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }
+        )->with(['purchaseable', 'purchase'])->get();
 
-          // Separamos albums y canciones
-          $salesAlbums = $sales->filter(function ($purchase) {
-            return $purchase->purchaseable_type === 'App\Models\Album';
+        // Separar álbumes y canciones
+        $salesAlbums = $purchaseItems->filter(function ($purchaseItem) {
+            return $purchaseItem->purchaseable_type === Album::class;
         })->values();
 
-        $salesSongs = $sales->filter(function ($purchase) {
-            return $purchase->purchaseable_type === 'App\Models\Song';
+        $salesSongs = $purchaseItems->filter(function ($purchaseItem) {
+            return $purchaseItem->purchaseable_type === Song::class;
         })->values();
 
         return Inertia::render('Albums/ArtistSales', [
@@ -67,6 +72,9 @@ class PurchasesController extends Controller
 
     public function checkout(Request $request) {
 
+        $user = Auth::user();
+
+
         $request->validate([
             'items' => 'required|array',
             'total' => 'required|numeric',
@@ -95,13 +103,20 @@ class PurchasesController extends Controller
 
         if(count($albums) > 0 || count($songs) > 0) {
             if($total === $totalRequest && $tax === $total * 0.005) {
-                dd('DE LUJO, TOTAL IGUAL');
+                    // VERIFICADO CON LA BASE DE DATOS
+
+                    // GUARDAR PURCHASES
+
+                    // Purchase::create(['user_id' => $user->id, 'purchaseable_type' => 'mixed', 'purchaseable_id' => ...]);
+
+                    // TODO: CHECKOUT CON STRIPE O METAMASK
+
+            } else {
+                // TODO: ERROR: No coinciden los datos cliente con los de la BD
             }
+        } else {
+            // TODO: Error, no hay albums ni songs
         }
-
-        // VERIFICADO CON LA BASE DE DATOS
-        // TODO: CHECKOUT CON STRIPE O METAMASK
-
 
         return Inertia::render('Purchases/Checkout');
 

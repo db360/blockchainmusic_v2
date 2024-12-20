@@ -31,12 +31,13 @@ class Purchase extends Model
         ];
     }
 
+    public function uniqueIds()
+{
+    return ['id'];
+}
+
     public function user(): BelongsTo {
         return $this->belongsTo(User::class);
-    }
-
-    public function purchaseable(): MorphTo {
-        return $this->morphTo();
     }
 
     public function scopeCompleted($query) {
@@ -45,5 +46,10 @@ class Purchase extends Model
 
     public function scopePending($query) {
         return $query->where('status', 'pending');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(PurchaseItem::class);
     }
 }

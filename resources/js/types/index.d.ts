@@ -20,6 +20,13 @@ export interface Song {
     lyrics?: string | null;
     genre: string;
     subgenre?: string | null;
+    album?: Album;
+    pivot?: {
+      playlist_id: string;
+      song_id: number;
+      created_at: string;
+      updated_at: string;
+    };
     metadata?: Record<string, any> | null;
     play_count: number;
     created_at: string; // ISO date string
@@ -55,6 +62,28 @@ export interface Album {
     totalDuration?: string; // Duración total del álbum, puede ser undefined si no se calcula
 }
 
+export interface Playlist {
+    cover_image: string;
+    created_at: string;
+    description?: string;
+    id: string;
+    is_public: boolean;
+    slug: string;
+    songs: Song[],
+    title: string;
+    updated_at: string;
+    user_id: number;
+}
+
+
+export interface Like {
+  id: number,
+  user_id: number,
+  favoritable_type: string,
+  favoritable_id: number,
+  created_at: string,
+  updated_at: string,
+};
 
 
 export type PageProps<

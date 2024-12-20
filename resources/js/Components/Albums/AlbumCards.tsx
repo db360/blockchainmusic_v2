@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
-import { Album } from "@/types";
+import { Album, Like } from "@/types";
 import { Link } from "@inertiajs/react";
 import { useCart } from "react-use-cart";
+import LikeButtonLink from "../Favorite/LikeButtonLink";
 
 interface AlbumsCardProps {
     albums: Album[];
     // Añadimos la prop para los likes
-    userLikes?: number[]; // Array de IDs de álbumes que el usuario ha dado like
+    userLikes?: Like[]; // Array de IDs de álbumes que el usuario ha dado like
 }
 
 export default function AlbumsCard({
     albums,
     userLikes = [],
 }: AlbumsCardProps) {
+
     const [isOpen, setIsOpen] = useState(false);
     const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
-    // Función para verificar si un álbum tiene like
-    const isLiked = (albumId: number) => {
-        return userLikes.includes(albumId);
-    };
+
 
     const handleMoreClick = (album: Album, event: React.MouseEvent) => {
         event.stopPropagation(); // Prevenir que el click se propague
@@ -55,6 +54,7 @@ export default function AlbumsCard({
         <>
             {albums && albums.length > 0 ? (
                 albums.map((album, index) => (
+
                     <div
                         key={index}
                         className="bg-gray-100 dark:bg-gray-900 shadow-lg rounded px-3"
@@ -68,38 +68,7 @@ export default function AlbumsCard({
                                 alt=""
                             />
                             <div className="absolute bg-black rounded bg-opacity-0 group-hover:bg-opacity-60 w-full h-full top-0 flex items-center group-hover:opacity-100 transition justify-evenly">
-                                <Link
-                                    href={`/albums/${album.id}/favorite`}
-                                    method="post"
-                                    title="like"
-                                    className={`hover:scale-110 text-white opacity-0 transform translate-y-3 group-hover:translate-y-0 group-hover:opacity-100 transition`}
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20"
-                                        height="20"
-                                        fill={
-                                            isLiked(album.id)
-                                                ? "red"
-                                                : "currentColor"
-                                        }
-                                        className={`bi bi-heart${
-                                            isLiked(album.id) ? "-fill" : ""
-                                        }`}
-                                        viewBox="0 0 16 16"
-                                    >
-                                        {isLiked(album.id) ? (
-                                            // Corazón lleno para cuando tiene like
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
-                                            />
-                                        ) : (
-                                            // Corazón vacío para cuando no tiene like
-                                            <path d="M8 2.748l-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
-                                        )}
-                                    </svg>
-                                </Link>
+                                <LikeButtonLink song={null} album={album} userLikes={userLikes} type="album"/>
                                 <button
                                     title="play"
                                     className="hover:scale-110 text-white opacity-0 transform translate-y-3 group-hover:translate-y-0 group-hover:opacity-100 transition"
@@ -165,7 +134,7 @@ export default function AlbumsCard({
                         href={`/album/${selectedAlbum.id}`}
                         className="whitespace-nowrap px-3 py-1 text-black dark:text-gray-300 rounded-md hover:bg-blue-600 transition block text-center"
                     >
-                        Ver Album 
+                        Ver Album
                     </Link>
                     <Link
                         href={`/album/${selectedAlbum.id}`}
