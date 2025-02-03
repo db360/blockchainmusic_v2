@@ -1,10 +1,10 @@
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import { Album} from "@/types";
+import { Album, Like} from "@/types";
 import { usePage } from "@inertiajs/react";
 import ExplorerLayout from "../Explorer/ExplorerLayout";
 
 export default function Index() {
-    const { albums, user, userLikes } = usePage().props;
+    const { albums, user, userLikes }:{userLikes: Like[]} = usePage().props;
 
     let albumsData:Album[] = albums?.data;
 

@@ -42,6 +42,7 @@ export default function CartCard({ item }: { item:Item }) {
 
                                             <div className="flex items-center gap-4">
                                                 <button
+
                                                     type="button"
                                                     className="inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-900 hover:underline dark:text-gray-400 dark:hover:text-white"
                                                 >
@@ -65,7 +66,7 @@ export default function CartCard({ item }: { item:Item }) {
                                                     Add to Favorites
                                                 </button>
 
-                                                <button 
+                                                <button
                                                     onClick={() => removeItem(item.id)}
                                                     type="button"
                                                     className="inline-flex items-center text-sm font-medium text-red-600 hover:underline dark:text-red-500"

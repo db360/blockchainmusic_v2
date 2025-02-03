@@ -12,9 +12,9 @@ export default function PlaylistCard({playlist}:{playlist: Playlist}) {
             </div>
             <div>
                 {playlist.songs.map((song, index) => (
-                <div className="flex justify-between p-1">
-                    <Link href={song.song_signed_url}>
-                        <p key={index} className="text-gray-300">{song.title}</p>
+                <div key={index}  className="flex justify-between p-1">
+                    <Link href={`/album/${song.album.id}`}>
+                        <p className="text-gray-300">{song.title}</p>
                     </Link>
                     <p className="text-gray-300">{song.duration}</p>
                 </div>

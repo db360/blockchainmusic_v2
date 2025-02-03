@@ -126,9 +126,8 @@ export default function ShowAlbum({ album, user, songs, userLikes }:{album:Album
                                                 >
                                                     {song.track_number}
                                                 </td>
-                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex gap-4">
+                                                <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     <p>{song.title}</p>
-
                                                 </td>
                                                 <td className="px-6 py-4">
                                                 <LikeButtonLink album={null} song={song} type="song" userLikes={userLikes}/>

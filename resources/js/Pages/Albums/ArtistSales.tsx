@@ -1,8 +1,11 @@
 import StatusIcon from "@/Components/historial/StatusIcon";
 import Authenticated from "@/Layouts/AuthenticatedLayout";
-import { AlbumWithRelations, Purchase, Sale, SongWithRelations } from "@/types";
+import { PurchaseDetailAlbum, PurchaseDetailSong } from "@/types";
 
-export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: AlbumWithRelations, salesSongs: SongWithRelations}) {
+
+// TODO: COMPONENTE PARA LAS TABLAS
+
+export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: PurchaseDetailAlbum[], salesSongs: PurchaseDetailSong[]}) {
     console.log(salesAlbums);
     console.log(salesSongs);
     return (
@@ -19,7 +22,7 @@ export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: 
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-6 py-3 w-5">
+                            <th scope="col" className="px-6 py-3 w-64">
                                 File
                             </th>
                             <th scope="col" className="px-6 py-3 w-5">
@@ -48,7 +51,6 @@ export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: 
                     </thead>
                     <tbody>
                     {Object.values(salesAlbums).map((album, index) => {
-                        const typedAlbum =  album as Purchase;
     // Convertir la fecha
     const formattedDate = new Date(album.created_at).toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -68,26 +70,26 @@ export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: 
                 scope="row"
                 className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             >
-                {typedAlbum.purchaseable.title}
+                {album.purchaseable.title}
             </th>
             <th
                 scope="row"
-                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white truncate"
+                className="px-6 py-4 truncate font-medium text-gray-900 whitespace-nowrap dark:text-white line-clamp-1 "
             >
-                {typedAlbum.id}
+                {album.id}
             </th>
-            <td className="px-6 py-4">{typedAlbum.purchaseable_type}</td>
+            <td className="px-6 py-4">{album.purchaseable_type}</td>
             <td className="px-6 py-4">
                 <img
                     className="w-28"
-                    src={typedAlbum.purchaseable.cover_image ?? ""}
+                    src={album.purchaseable.cover_image ?? ""}
                     alt=""
                 />
             </td>
             <td className="px-6 py-4">{formattedDate}</td>
-            <td className="px-6 py-4">{typedAlbum.payment_method}</td>
-            <td className="px-6 py-4">{typedAlbum.amount}€</td>
-            <td className="px-6 py-4"> <StatusIcon status={typedAlbum.status}/></td>
+            <td className="px-6 py-4">{album.purchase.payment_method}</td>
+            <td className="px-6 py-4">{album.purchaseable.price}€</td>
+            <td className="px-6 py-4"> <StatusIcon status={album.purchase.status}/></td>
         </tr>
     );
 })}
@@ -102,7 +104,7 @@ export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: 
                     <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" className="px-6 py-3 w-5">
+                            <th scope="col" className="px-6 py-3 w-64">
                                 File
                             </th>
                             <th scope="col" className="px-6 py-3 w-5">
@@ -162,14 +164,14 @@ export default function ArtistSales({ salesAlbums, salesSongs  }: {salesAlbums: 
             <td className="px-6 py-4">
                 <img
                     className="w-28"
-                    src={song.purchaseable.album.cover_image ?? ""}
+                    src={song.purchaseable.album?.cover_image ?? ""}
                     alt=""
                 />
             </td>
             <td className="px-6 py-4">{formattedDate}</td>
-            <td className="px-6 py-4">{song.payment_method}</td>
-            <td className="px-6 py-4">{song.amount}€</td>
-            <td className="px-6 py-4"> <StatusIcon status={song.status}/></td>
+            <td className="px-6 py-4">{song.purchase.payment_method}</td>
+            <td className="px-6 py-4">{song.item_price}€</td>
+            <td className="px-6 py-4"> <StatusIcon status={song.purchase.status}/></td>
         </tr>
     );
 })}

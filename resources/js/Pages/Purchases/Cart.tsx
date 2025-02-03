@@ -7,6 +7,7 @@ export default function Cart() {
     const { isEmpty, items, cartTotal } = useCart();
 
 
+    //TODO: CHECK USER IN THE CART, IF IT's NOT THE SAME USER, DELETE CART ITEMS
     console.log(items);
 
     const cartItemsString = localStorage.getItem('react-use-cart');

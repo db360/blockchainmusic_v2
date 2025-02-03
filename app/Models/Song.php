@@ -62,4 +62,9 @@ class Song extends Model
         $this->increment('play_count');
     }
 
+    public function favorites()
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
+    }
+
 }

@@ -46,7 +46,6 @@ export default function Authenticated({
                                     My Library
                                 </NavLink>
 
-                                {user.role === "user" && (
                                     <>
                                         <NavLink
                                             href={route("purchases.user")}
@@ -54,10 +53,9 @@ export default function Authenticated({
                                                 "purchases.user"
                                             )}
                                         >
-                                            History
+                                            Purchases
                                         </NavLink>
                                     </>
-                                )}
 
                                 {user.role === "artist" && (
                                     <>

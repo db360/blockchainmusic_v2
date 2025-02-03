@@ -27,7 +27,7 @@ class SocialLoginController extends Controller
             Auth::login($user);
             Session::regenerate();
 
-            return redirect()->intended('dashboard');
+            return redirect()->intended('/explore');
         }
 
         session([

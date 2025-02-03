@@ -13,7 +13,8 @@ use Inertia\Inertia;
 
 class AlbumController extends Controller
 {
-    private function userLikes(string $type) {
+    private function userLikes(string $type)
+    {
         $user = Auth::user();
 
         $favorites = $user->favorites()->get()->toArray();
@@ -36,51 +37,51 @@ class AlbumController extends Controller
             'userLikes' => $userLikes
         ]);
     }
-    public function userAlbums()
-    {
+    // public function userAlbums()
+    // {
 
-        $user = Auth::user();
+    //     $user = Auth::user();
 
 
 
-        if ($user->role === 'artist') {
+    //     if ($user->role === 'artist') {
 
-            $albums = Album::with('user') // Cargar la relación 'user'
-                ->where('user_id', $user->id) // Filtrar por el ID del usuario
-                ->latest()
-                ->paginate(12);
+    //         $albums = Album::with('user') // Cargar la relación 'user'
+    //             ->where('user_id', $user->id) // Filtrar por el ID del usuario
+    //             ->latest()
+    //             ->paginate(12);
 
-            return Inertia::render('Albums/UserAlbums', [
-                'albums' => $albums,
-                'role' => $user->role
+    //         return Inertia::render('Albums/UserAlbums', [
+    //             'albums' => $albums,
+    //             'role' => $user->role
 
-            ]);
-        }
+    //         ]);
+    //     }
 
-        if ($user->role === 'user') {
-            $purchases = Purchase::where('user_id', $user->id)
-                ->with('purchaseable') // Carga la relación polimórfica
-                ->get();
+    //     if ($user->role === 'user') {
+    //         $purchases = Purchase::where('user_id', $user->id)
+    //             ->with('purchaseable') // Carga la relación polimórfica
+    //             ->get();
 
-            $purchasedAlbums = $purchases->filter(function ($purchase) {
-                return $purchase->purchaseable_type === Album::class;
-            })->map(function ($purchase) {
-                return $purchase->purchaseable;
-            })->values();
+    //         $purchasedAlbums = $purchases->filter(function ($purchase) {
+    //             return $purchase->purchaseable_type === Album::class;
+    //         })->map(function ($purchase) {
+    //             return $purchase->purchaseable;
+    //         })->values();
 
-            $purchasedSongs = $purchases->filter(function ($purchase) {
-                return $purchase->purchaseable_type === Song::class;
-            })->map(function ($purchase) {
-                return $purchase->purchaseable;
-            })->values();
+    //         $purchasedSongs = $purchases->filter(function ($purchase) {
+    //             return $purchase->purchaseable_type === Song::class;
+    //         })->map(function ($purchase) {
+    //             return $purchase->purchaseable;
+    //         })->values();
 
-            return Inertia::render('Albums/UserAlbums', [
-                'albums' => $purchasedAlbums,
-                'songs' => $purchasedSongs,
-                'role' => $user->role
-            ]);
-        }
-    }
+    //         return Inertia::render('Albums/UserAlbums', [
+    //             'albums' => $purchasedAlbums,
+    //             'songs' => $purchasedSongs,
+    //             'role' => $user->role
+    //         ]);
+    //     }
+    // }
 
     public function showAlbum($id, Bucket $firebaseStorage)
     {
@@ -122,21 +123,41 @@ class AlbumController extends Controller
 
         $user = Auth::user();
 
+        // En el controlador
+        $favorites = $user->favorites()
+            ->get()
+            ->groupBy('favoritable_type')
+            ->map(function ($favorites, $type) {
+                $ids = $favorites->pluck('favoritable_id');
 
-        // USER FAVORITES
-        $userFavAlbums = $user->favorites()->where('favoritable_type', 'Album')->with('albums')->get();
-        $userFavSongs = $user->favorites()->where('favoritable_type', 'Song')->get();
+                // Si es tipo "Song", obtener datos de las canciones
+                if ($type === 'Song') {
+                    return Song::whereIn('id', $ids)
+                        ->with('album:id,title,cover_image')
+                        ->get();
+                }
+
+                // Si es tipo "Album", obtener datos de los álbumes
+                if ($type === 'Album') {
+                    return Album::whereIn('id', $ids)
+                        ->with('user:id,name')
+                        ->get();
+                }
+
+                return $ids;
+            });
+
+
 
 
         // USER PLAYLISTS WITH SONGS
-        $userPlaylists = $user->playlists()->with(['songs' => function($query) {
+        $userPlaylists = $user->playlists()->with(['songs' => function ($query) {
             $query->orderBy('pivot_position');
         }])
-        ->get();
+            ->get();
 
         return Inertia::render('Library/Library', [
-            'userFavAlbums' => $userFavAlbums,
-            'userFavSongs' => $userFavSongs,
+            'userFavorites' => $favorites,
             'userPlaylists' => $userPlaylists
         ]);
     }

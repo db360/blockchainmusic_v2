@@ -44,23 +44,21 @@ class PurchasesController extends Controller
     {
         $user = Auth::user();
 
-        // Obtenemos todas las compras del usuario con sus relaciones
-        $purchases = Purchase::where('user_id', $user->id)
-            ->with('purchaseable')  // Carga la relación polimórfica
+        // Obtenemos las compras del usuario junto con sus items
+        $purchases = Purchase::with('items', 'items.purchaseable')
+            ->where('user_id', $user->id)
             ->get();
 
-        // Separamos albums y canciones
-        $purchasedAlbums = $purchases->filter(function ($purchase) {
-            return $purchase->purchaseable_type === 'App\Models\Album';
-        })->values();
+          return Inertia::render('Albums/UserPurchases', [
+            'purchases' => $purchases,
+        ]);
+    }
 
-        $purchasedSongs = $purchases->filter(function ($purchase) {
-            return $purchase->purchaseable_type === 'App\Models\Song';
-        })->values();
+    public function purchaseDetail(string $id) {
+        $purchaseDetail = Purchase::where('id', $id)->with('items')->first();
 
-        return Inertia::render('Albums/UserPurchases', [
-            'purchasedAlbums' => $purchasedAlbums,
-            'purchasedSongs' => $purchasedSongs
+        return Inertia::render('Purchases/Detail',[
+            'purchaseDetail' => $purchaseDetail
         ]);
     }
 

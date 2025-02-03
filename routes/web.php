@@ -43,11 +43,13 @@ Route::middleware('auth')->group(function () {
 
     // DASHBOARD ROUTES
     Route::get('/explore', [AlbumController::class, 'index'])->name('explore.index');
+
     // LIBRARY
     Route::get('/library', [AlbumController::class, 'userLibrary'])->name('user.library');
-    Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
     Route::get('/history', [PurchasesController::class, 'artistSales'])->name('sales.artist');
-
+    //PURCHASES
+    Route::get('/purchases', [PurchasesController::class, 'userPurchases'])->name('purchases.user');
+    Route::get('/purchases/{id}', [PurchasesController::class, 'purchaseDetail'])->name('purchases.detail');
     // UPLOAD ROUTE
     Route::get('/upload', [UploadController::class, 'uploadForm'])->name('albums.uploadForm');
     Route::post('/upload', [UploadController::class, 'upload'])->name('albums.upload')->middleware(CheckArtistRole::class);
